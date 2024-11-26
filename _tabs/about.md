@@ -1,4 +1,4 @@
-@@ -4,38 +4,5 @@ icon: fas fa-info-circle
+icon: fas fa-info-circle
 order: 4
 ---
 
