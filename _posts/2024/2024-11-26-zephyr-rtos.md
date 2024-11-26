@@ -1,23 +1,15 @@
 ---
-title: "Posting About stuff"
+title: "esp32 Zephyr RTOS"
 date: 2024-11-26 08:00:00 - 0000
 categories: [Firmware]
-tags: [C, C++]
+tags: [C, C++, Zephyr]
 image:
     path: /assets/img/headers/zephyresp32.webp
 pin: false
+description: esp32 tests with zephyr RTOS and C++17.
 ---
 
 # Zephyr ESP32
-## Check the about tab
-[Link.](https://fcarraustewart.github.io/about)
-
-```
-void main()
-{
-    return;
-}
-```
 ## Linkedin Post:
 Open-source esp32 cpp-fw zephyr/freertos tests
 

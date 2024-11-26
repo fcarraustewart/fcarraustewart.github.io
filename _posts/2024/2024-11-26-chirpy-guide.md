@@ -275,7 +275,6 @@ Your GitHub Pages site will be accessible via your custom domain `docs.example.c
 ## Video Tutorial
 {% include embed/youtube.html id='7cLkDE8_tCI' %}
 
-
-## Posting in your site tutorial:
-> Felipe Carrau Stewart. (info)[https://fcarraustewart.github.io/about].
+> Thanks DigitalDen the author.
+> Felipe Carrau Stewart. [info](https://fcarraustewart.github.io/about).
    {: .prompt-tip }
