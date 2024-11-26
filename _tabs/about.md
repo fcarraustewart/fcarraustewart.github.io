@@ -37,16 +37,13 @@ order: 4
 
 ### PLCs, high voltage and moving bigger-than-humans stuff
 
-- I spent a lot of time fighting a project of 27 motors connected to VFDs, connected to PLCs, architecturing a state-machine, and making the boot-up inside a factory that made cookies.
-
+- - - I spent a lot of time fighting a project of 27 motors connected to VFDs, connected to PLCs, architecturing a state-machine, and making the boot-up inside a factory that made cookies.
 
 # CV:
 
 ![CV](/assets/img/headers/fcarraustewart-CV-Q4_2024-_5_.webp)
 
 
-
-
-> Felipe Carrau Stewart
+> Felipe Carrau Stewart. [info](https://fcarraustewart.github.io/about).
 {: .prompt-tip }
 

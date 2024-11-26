@@ -3,11 +3,11 @@ title: "Set Up and Deploy a Documentation Site With Jekyll & Chirpy"
 date: 2024-11-26 08:00:00 - 0000
 categories: [Web Development, Jekyll]
 tags: [Jekyll, Chirpy, GitHub Actions, Git]
+author: digitalden
 image: 
   path: /assets/img/headers/jekyll2.webp
   lqip: data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAwAwCdASoUAAwAPzmGuVOvKSWisAgB4CcJaQAAUqcyf8p4AP3Sdf++BU9dTgce48YBk3FazVP1oSWiXpyZt1q9TPl8mBK0AAA=
 ---
-
  This documentation outlines the steps for setting up and deploying a documentation site using Jekyll, a popular static site generator, and the Chirpy theme using GitHub Actions.
  
 ## Objectives
@@ -277,5 +277,5 @@ Your GitHub Pages site will be accessible via your custom domain `docs.example.c
 
 
 ## Posting in your site tutorial:
-   > Posting `https://chirpy.cotes.page/posts/write-a-new-post/`.
+> Felipe Carrau Stewart. (info)[https://fcarraustewart.github.io/about].
    {: .prompt-tip }
