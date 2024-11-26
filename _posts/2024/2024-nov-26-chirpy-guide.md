@@ -1,14 +1,14 @@
 ---
-title: "Set Up and Deploy a Documentation Site With Jekyll & Chirpy on AWS Cloud9"
+title: "Set Up and Deploy a Documentation Site With Jekyll & Chirpy"
 date: 2024-03-26 08:00:00 - 0500
-categories: [Web Development, Jekyll]
-tags: [Jekyll, Chirpy, GitHub Actions, Git]
+#categories: [Web Development, Jekyll]
+#tags: [Jekyll, Chirpy, GitHub Actions, Git]
 image: 
   path: /assets/img/headers/jekyll2.webp
   lqip: data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAwAwCdASoUAAwAPzmGuVOvKSWisAgB4CcJaQAAUqcyf8p4AP3Sdf++BU9dTgce48YBk3FazVP1oSWiXpyZt1q9TPl8mBK0AAA=
 ---
 
- This documentation outlines the steps for setting up and deploying a documentation site using Jekyll, a popular static site generator, and the Chirpy theme using GitHub Actions on AWS Cloud9 IDE. It includes instructions for configuring a custom subdomain, such as `https://docs.example.com`, through AWS Route 53 and integrating it with GitHub Pages.
+ This documentation outlines the steps for setting up and deploying a documentation site using Jekyll, a popular static site generator, and the Chirpy theme using GitHub Actions.
  
 ## Objectives
 
