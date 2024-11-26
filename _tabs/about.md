@@ -4,12 +4,11 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-**Welcome**
+**Hi, this is Felipe. I am an electronics engineer currently based in Paris, France.**
 
 ![About](/assets/img/headers/avatar.webp)
 
 # A bit of introduction
-- Hi, this is Felipe. I am an electronics engineer currently based in Paris, France. 
 - I've been born and raised in Montevideo, Uruguay, into a familiy with a mix of spanish and scottish descendants who were dedicated to wine-making, biochemistry, science and medicine. 
 - I thought adding electronics and music to this established mix would make it an interestingly spicy addition, therefore, I adventured myself into this world, with a little help from my friends, of course.
 
