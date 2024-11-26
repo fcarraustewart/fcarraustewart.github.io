@@ -1,16 +1,20 @@
 ---
-title: "Posting About stuff"
+title: "gr-tempest"
 date: 2024-11-26 08:00:00 - 0000
-categories: [Firmware]
-tags: [C, C++]
+categories: [SDR]
+tags: [C++, tempest, gr-tempest]
 image:
     path: /assets/img/headers/grtempest.webp
 pin: false
+description: gr-tempest, project that my team and I based our end of career dissertation.
 ---
 
 # gr-tempest GNU Radio out of tree module project. 
-## Check the about tab
-[Link.](https://fcarraustewart.github.io/about)
+## Links
+- [Paper IEEE AsianHOST2022](https://ieeexplore.ieee.org/document/10022149)
+- [Demo](https://www.youtube.com/watch?v=qsjSH6T5xac) ![Photo](/assets/img/other/demo%20photo.webp)
+- [Linus TechTips video mention.](https://www.youtube.com/watch?v=OPckpjBSAOw)
+- [Federico Larroca: Our Tutor's webpage](https://iie.fing.edu.uy/personal/flarroca/)
 
 ## Linkedin Post Site:
 Associated with Universidad de la República
