@@ -5,6 +5,7 @@ categories: [SDR]
 tags: [C++, tempest, gr-tempest]
 image:
     path: /assets/img/headers/grtempest.webp
+    lqip: data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAwAwCdASoUAAwAPzmGuVOvKSWisAgB4CcJaQAAUqcyf8p4AP3Sdf++BU9dTgce48YBk3FazVP1oSWiXpyZt1q9TPl8mBK0AAA=
 pin: false
 description: Software-Defined Radio - gr-tempest, project that my team and I based our end of career dissertation.
 ---
