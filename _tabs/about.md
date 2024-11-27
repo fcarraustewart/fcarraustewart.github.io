@@ -44,6 +44,8 @@ order: 4
 ![CV](/assets/img/headers/fcarraustewart-CV-Q4_2024-_5_.webp)
 
 
-> Felipe Carrau Stewart. [info](https://fcarraustewart.github.io/about).
+> Felipe Carrau Stewart. [info](https://fcarraustewart.github.io/about). 
+> [linkedin.com/in/carraufelipe](linkedin.com/in/carraufelipe)
+> [github.com/fcarraustewart](github.com/fcarraustewart)
 {: .prompt-tip }
 
