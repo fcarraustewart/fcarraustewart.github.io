@@ -45,7 +45,7 @@ order: 4
 
 
 > Felipe Carrau Stewart. [info](https://fcarraustewart.github.io/about). 
-> [linkedin.com/in/carraufelipe](linkedin.com/in/carraufelipe)
-> [github.com/fcarraustewart](github.com/fcarraustewart)
+> [linkedin.com/in/carraufelipe](https://www.linkedin.com/in/carraufelipe)
+> [github.com/fcarraustewart](https://www.github.com/fcarraustewart)
 {: .prompt-tip }
 
