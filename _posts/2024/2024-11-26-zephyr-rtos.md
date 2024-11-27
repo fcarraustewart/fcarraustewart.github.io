@@ -5,7 +5,7 @@ categories: [Firmware]
 tags: [C, C++, Zephyr]
 image:
     path: /assets/img/headers/zephyresp32.webp
-    lqip: data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAwAwCdASoUAAwAPzmGuVOvKSWisAgB4CcJaQAAUqcyf8p4AP3Sdf++BU9dTgce48YBk3FazVP1oSWiXpyZt1q9TPl8mBK0AAA=
+    lqip: data:image/webp;base64,UklGRvgAAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSG0AAAABcCIAgJrcXL+w5PqB/QCLdOIu8hatq2Si6zMcJg1v7vqAiJgA8K956a4sMs9ko8D3fT+Yxp4pnR5mHlC25r2SKlUCf/lK7vT8vdjuHcLgHWT5HSC92L+EANYpVBudvudCCF355pbmWI4nwf8GAFZQOCBkAAAAsAMAnQEqFAAUAD85jMFXLykno6gKqeAnCWcAAC51y355xXi6NwAA/c0FbWxXZRfsBR5uLtP/7mrBt+90OpZuIFSKRLh+yfNiUS74BeXco3TBMrcZAdoBnGMz+Iw/wJNn+LxAAA==
 pin: false
 description: esp32 tests with zephyr RTOS and C++17.
 ---
