@@ -6,14 +6,18 @@ tags: [C++, tempest, gr-tempest]
 image:
     path: /assets/img/headers/grtempest.webp
 pin: false
-description: gr-tempest, project that my team and I based our end of career dissertation.
+description: Software-Defined Radio - gr-tempest, project that my team and I based our end of career dissertation.
 ---
 
-# gr-tempest GNU Radio out of tree module project. 
-## Links
+# SDR - gr-tempest - GNU Radio out of tree module project. 
+## Mentions:
+**Dissertation Paper: Published 2022, IEEE, Asian Hardware-Oriented Security and Trust (AsianHOST)**
+Academic Mentions: 
 - [Paper IEEE AsianHOST2022](https://ieeexplore.ieee.org/document/10022149)
+- (1.5M views video) [Linus TechTips video mention.](https://www.youtube.com/watch?v=OPckpjBSAOw) 
+- (1.2K likes post) [Linkedin by Paris based Aggregate Professor.](https://www.linkedin.com/posts/thomas-lavarenne-9b8998147_espionner-un-moniteur-vga-ou-hdmi-gr%C3%A2ce-aux-activity-7261145763815079937-PGVr?utm_source=share&utm_medium=member_desktop)
+- (2nd place) [Universidad de la Republica prize](https://idm.uy/2021/premiacion.html)
 - [Demo](https://www.youtube.com/watch?v=qsjSH6T5xac) ![Photo](/assets/img/other/demo%20photo.webp)
-- [Linus TechTips video mention.](https://www.youtube.com/watch?v=OPckpjBSAOw)
 - [Federico Larroca: Our Tutor's webpage](https://iie.fing.edu.uy/personal/flarroca/)
 
 ## Linkedin Post Site:
