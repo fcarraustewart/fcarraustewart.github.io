@@ -6,7 +6,7 @@ order: 4
 
 **Hi, this is Felipe. I am an electronics engineer currently based in Paris, France.**
 
-![About](/assets/img/headers/avatar.webp)
+![About](/assets/img/headers/avatar.webp){: lqip=UklGRsYAAABXRUJQVlA4ILoAAACQBQCdASoUABQAPzmOuVavKaUjqA1R4CcJZACsMuovti1/xnZs1G/ALT8OhAKN3gYVAp/yQAD+IxEawRTjfgFCgfYisaYHaW0i3NicVYTnIwOVSnDbdwKoqdxR7hh9jgawf14wRXySTNuTrdgXheQaqGCrLImoHlcHhW2Qna2HXLnHPDrjsY5LUoFORwPhR3Pd9i0xYnyGW7qDTKH6PEOMhw1sJONvbDx0fiMFIQ+IGlhjDH4z+JAAAAA=}
 
 # A bit of introduction
 - I've been born and raised in Montevideo, Uruguay, into a familiy with a mix of spanish and scottish descendants who were dedicated to wine-making, biochemistry, science and medicine. 
