@@ -4,8 +4,8 @@ date: 2024-11-26 08:00:00 - 0000
 categories: [SDR]
 tags: [C++, tempest, gr-tempest]
 image:
-    path: /assets/img/headers/grtempest.webp
-    lqip: data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAwAwCdASoUAAwAPzmGuVOvKSWisAgB4CcJaQAAUqcyf8p4AP3Sdf++BU9dTgce48YBk3FazVP1oSWiXpyZt1q9TPl8mBK0AAA=
+    path: /assets/img/headers/b200mini.webp
+    lqip: data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAwCdASoUAAsAPzmEuVOvKKWisAgB4CcJaQAAUWIJT18AAP7qiFgQIcgspgqmZe0OMCYe/HPS5ArpjmGyOAAAAAA=
 pin: false
 description: Software-Defined Radio - gr-tempest, project that my team and I based our end of career dissertation.
 ---
