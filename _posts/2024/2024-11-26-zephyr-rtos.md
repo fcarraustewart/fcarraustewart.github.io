@@ -16,7 +16,7 @@ Personal project Jan 2024 - Present, where I try to setup a zero runtime overhea
 
 The goal is to establish a multithreaded environment with a very expressive and modularized message passing interface as IPC (inter-processes communication) using C++ templates and useful design patterns; define an abstraction layer that makes it RTOS-agnostic, resulting in understandable, maintainable, and scalable code.
 
-The hardware used is a CodeCell from codecell.org, with an ESP32C3 and peripherals: 
+The hardware used is a CodeCell from [microbots.io](https://microbots.io/products/codecell?variant=50037783724365), with an ESP32C3 and peripherals: 
 - environmental proximity/light sensor, 
 - an IMU BNO085, 
 - and an addressable LED with RGB values.
