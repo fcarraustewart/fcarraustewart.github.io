@@ -1,17 +1,17 @@
-// vite.config.js
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react'; // or '@vitejs/plugin-react-swc'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
 
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: '../assets/three-app',
+    outDir: resolve(__dirname, "../assets/three-app"),
     emptyOutDir: true,
-    lib: {
-      entry: './src/main.jsx',
-      name: 'ParticleVessel',
-      fileName: () => 'particlevessel.js',
-      formats: ['es'],
-    },
-  },
+    rollupOptions: {
+      input: "./src/main.jsx",
+      output: {
+        entryFileNames: "particlevessel.js"   // 👈 force stable filename
+      }
+    }
+  }
 });
