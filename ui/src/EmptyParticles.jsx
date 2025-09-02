@@ -10,20 +10,6 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
   const geometryRef = useRef(null);
   const materialRef = useRef(null);
   const pointsRef = useRef(null);
-  
-  // Camera drag & inertia
-  const targetRotation = useRef({ x: 0, y: 0 });
-  const currentRotation = useRef({ x: 0, y: 0 });
-  const isDragging = useRef(false);
-  const lastMouse = useRef({ x: 0, y: 0 });
-  const velocity = useRef({ x: 0, y: 0 });
-
-  // 🟢 Initial setup so we see the vessel
-  targetRotation.current.x = 0.2;   // a slight tilt down
-  targetRotation.current.y = Math.PI / 6; // 30° angle
-  currentRotation.current.x = targetRotation.current.x;
-  currentRotation.current.y = targetRotation.current.y;
-
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -36,12 +22,12 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
     scene.background = new THREE.Color("#F0EEE6");
     sceneRef.current = scene;
 
-    const camera = new THREE.PerspectiveCamera(80, width / height, 0.4, 599);
-    camera.position.z = 8;
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    camera.position.z = 5;
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: false,
+      antialias: true,
       powerPreference: "high-performance",
       alpha: false,
       stencil: false,
@@ -55,7 +41,7 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
     const particleMaterial = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
-        opacity: { value: 0.09 },
+        opacity: { value: 0.6 },
         speedFactor: { value: 1.0 },
       },
       vertexShader: `
@@ -73,7 +59,7 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
           // cardioid component (1 - sinθ) scaled + offset to stay positive
           float base = 0.65 + 0.55 * (1.0 - s);
           // subtle "cleft" emphasis using |cosθ|
-          float cleft = 0.8 * pow(abs(cos(a)), 0.8);
+          float cleft = 0.4 * pow(abs(cos(a)), 0.8);
           return clamp(base + cleft, 0.4, 1.6);
         }
 
@@ -86,23 +72,23 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
           float height = pos.y;
 
           // Vessel falloff (keeps an "empty" inner volume)
-          float vessel = smoothstep(0.7, 0.7, radius) * smoothstep(1.0, 0.7, radius);
+          float vessel = smoothstep(0.3, 0.7, radius) * smoothstep(1.0, 0.7, radius);
 
           // Rotation & breathing space modulated by speedFactor (from BLE)
-          angle += time * 0.2;
+          angle += time * 0.08;
           float space = sin(time * 0.3 * speedFactor + radius * 3.0) * 0.1;
 
           // Heart modulation of radial distance in XZ plane
-          float h = heartFactor(angle*speedFactor*0.5 + time*0.1);
+          float h = heartFactor(angle);
           float newRadius = (radius + space) * vessel * h * speedFactor;
 
           vec3 newPos;
-          newPos.x = cos(angle/speedFactor) * newRadius;
-          newPos.z = sin(angle/speedFactor) * newRadius - 0.1 * speedFactor;
-          newPos.y = height/speedFactor * vessel - 0.02*speedFactor;
+          newPos.x = cos(angle) * newRadius;
+          newPos.z = sin(angle) * newRadius;
+          newPos.y = height * vessel - 1.2;
 
           // Global scale to fit canvas
-          newPos *= 2.0;
+          newPos *= 2.75;
 
           vec4 mvPosition = modelViewMatrix * vec4(newPos, 1.0);
           gl_PointSize = size * (128.0 / -mvPosition.z);
@@ -115,7 +101,7 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
         void main() {
           vec2 c = gl_PointCoord - vec2(0.5);
           float d2 = dot(c, c);
-          if (d2 > 0.65) discard; // stay circular
+          if (d2 > 0.25) discard; // stay circular
           float alpha = (1.0 - smoothstep(0.2025, 0.25, d2)) * opacity;
           gl_FragColor = vec4(vColor, alpha);
         }
@@ -128,7 +114,7 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
     });
     materialRef.current = particleMaterial;
 
-    // Geometry setup (same as yours)...
+    // Geometry
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -167,70 +153,12 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
     scene.add(points);
     pointsRef.current = points;
 
-    // 🎥 Mouse drag controls with inertia
-    const onMouseDown = (e) => {
-      isDragging.current = true;
-      lastMouse.current.x = e.clientX;
-      lastMouse.current.y = e.clientY;
-      velocity.current.x = 0;
-      velocity.current.y = 0; // reset momentum
-    };
-    const onMouseUp = () => {
-      isDragging.current = false;
-    };
-    const onMouseMove = (e) => {
-      if (!isDragging.current) return;
-      const deltaX = e.clientX - lastMouse.current.x;
-      const deltaY = e.clientY - lastMouse.current.y;
-      lastMouse.current.x = e.clientX;
-      lastMouse.current.y = e.clientY;
-
-      targetRotation.current.y += deltaX * 0.005;
-      targetRotation.current.x += deltaY * 0.005;
-      targetRotation.current.x = Math.max(
-        -Math.PI / 2,
-        Math.min(Math.PI / 2, targetRotation.current.x)
-      );
-
-      velocity.current.x = deltaY * 0.002; // store "swipe speed"
-      velocity.current.y = deltaX * 0.002;
-    };
-
-    container.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("mousemove", onMouseMove);
-
     // Animation
     const clock = new THREE.Clock();
     const animate = () => {
       animationRef.current = requestAnimationFrame(animate);
       const time = clock.getElapsedTime();
       particleMaterial.uniforms.time.value = time;
-
-      // Apply inertia when not dragging
-      if (!isDragging.current) {
-        targetRotation.current.x += velocity.current.x;
-        targetRotation.current.y += velocity.current.y;
-
-        // Damping
-        velocity.current.x *= 0.95;
-        velocity.current.y *= 0.95;
-      }
-
-      // Smooth interpolation
-      currentRotation.current.x +=
-        (targetRotation.current.x - currentRotation.current.x) * 0.1;
-      currentRotation.current.y +=
-        (targetRotation.current.y - currentRotation.current.y) * 0.1;
-
-      const radius = 6.5;
-      camera.position.x =
-        radius * Math.sin(currentRotation.current.y) * Math.cos(currentRotation.current.x);
-      camera.position.y = radius * Math.sin(currentRotation.current.x);
-      camera.position.z =
-        radius * Math.cos(currentRotation.current.y) * Math.cos(currentRotation.current.x);
-      camera.lookAt(0, 0, 0);
-
       renderer.render(scene, camera);
     };
     animate();
@@ -246,10 +174,6 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
 
     return () => {
       window.removeEventListener("resize", onResize);
-      container.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("mousemove", onMouseMove);
-
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       if (pointsRef.current) scene.remove(pointsRef.current);
       if (geometryRef.current) geometryRef.current.dispose();
@@ -268,7 +192,7 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
   // Drive speed from sensor
   useEffect(() => {
     if (materialRef.current) {
-      materialRef.current.uniforms.speedFactor.value = 1.2 + sensorValue / 1.0;
+      materialRef.current.uniforms.speedFactor.value = 0.5 + sensorValue / 50.0;
     }
   }, [sensorValue]);
 
