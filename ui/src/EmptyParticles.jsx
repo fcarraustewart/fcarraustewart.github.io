@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
+const EmptyParticles = ({ count = 15000, sensorValue = 0 }) => {
   const mountRef = useRef(null);
   const animationRef = useRef(null);
   const sceneRef = useRef(null);
@@ -196,7 +196,7 @@ const EmptyParticles = ({ count = 45000, sensorValue = 0 }) => {
     }
   }, [sensorValue]);
 
-  return <div ref={mountRef} style={{ width: "100vw", height: "100vh" }} />;
+  return <div ref={mountRef} style={{ width: "50vw", height: "50vh" }} />;
 };
 
 export default EmptyParticles;
