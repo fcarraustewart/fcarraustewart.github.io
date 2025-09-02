@@ -1,65 +1,55 @@
+import * as THREE from "three";
+import { useEffect, useRef } from "react";
 
-import React, { useState } from "react";
-import { useBLE } from "./useBLE";
-import EmptyParticles from "./EmptyParticles";
-import { BandPassFilter } from "./BpFFilter.js";
-import FilteredDataChart from "./FilteredDataChart";
+export default function ParticleVessel() {
+  const mountRef = useRef();
 
-const ParticleVessel = () => {
-  const { connect, disconnect, isConnected, sendCommand } = useBLE();
-  const [rawValue, setRawValue] = useState(null);
-  const [filteredValue, setFilteredValue] = useState(null);
-  const [isStreaming, setIsStreaming] = useState(false);
+  useEffect(() => {
+    const mount = mountRef.current;
 
-  const SAMPLE_RATE = 100; // Hz
-  const CUTOFF = 1.0; // Hz
-  const HCUTOFF = 2.5; // Hz
-  const lpf = new BandPassFilter(CUTOFF, HCUTOFF, SAMPLE_RATE);
+    // Scene setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color("red"); // <--- here
 
-  const handleConnect = async () => {    
-    // TODO: replace with your real UUIDs
-    const SERVICE_UUID = "0000180d-0000-1000-8000-00805f9b34fb";       // Example
-    const CHARACTERISTIC_UUID = "12345678-1234-5678-1234-46789fffffff"; // Exampleimport React, { useState } from "react";
+    // Camera
+    const camera = new THREE.PerspectiveCamera(75, mount.clientWidth / mount.clientHeight, 0.1, 1000);
+    camera.position.z = 5;
 
-    await connect(SERVICE_UUID, CHARACTERISTIC_UUID, (value) => {
-      const raw = value.getFloat32(0, true);
-      const filtered = lpf.process(raw);
-      setRawValue(raw);
-      setFilteredValue(filtered);
-    });
-  };
+    // Renderer
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    mount.appendChild(renderer.domElement);
 
-  const toggleStream = () => {
-    if (!isConnected) return;
-    sendCommand(isStreaming ? 0x00 : 0x01);
-    setIsStreaming((s) => !s);
-  };
+    // Geometry
+    const geometry = new THREE.BufferGeometry();
+    const particleCount = 2000;
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 10;
+    }
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-  return (
-    <div>
-      {/* Controls */}
-      <div style={{ position: "absolute", top: 20, left: 20, zIndex: 30 }}>
-        <button onClick={isConnected ? disconnect : handleConnect}>
-          {isConnected ? "Disconnect BLE" : "Connect BLE"}
-        </button>
-        {isConnected && (
-          <button onClick={toggleStream} style={{ marginLeft: 8 }}>
-            {isStreaming ? "Stop" : "Play"}
-          </button>
-        )}
-      </div>
+    const material = new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.05 });
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
 
-      {/* Draggable chart widget (bottom-center by default) */}
-      <FilteredDataChart
-        rawValue={rawValue}
-        filteredValue={filteredValue}
-        sampleRateHz={SAMPLE_RATE}
-      />
+    // Animation loop
+    let frameId;
+    const animate = () => {
+      frameId = requestAnimationFrame(animate);
+      particles.rotation.y += 0.002;
+      renderer.render(scene, camera);
+    };
+    animate();
 
-      {/* Background animation (driven by filtered) */}
-      <EmptyParticles sensorValue={rawValue/100 ?? 0} />
-    </div>
-  );
-};
+    // Cleanup
+    return () => {
+      cancelAnimationFrame(frameId);
+      mount.removeChild(renderer.domElement);
+      geometry.dispose();
+      material.dispose();
+    };
+  }, []);
 
-export default ParticleVessel;
+  return <div ref={mountRef} style={{ width: "100%", height: "400px" }} />;
+}
