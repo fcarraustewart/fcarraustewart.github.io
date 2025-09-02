@@ -1,0 +1,21 @@
+<div id="three-hero" style="height:55vh;min-height:360px;"></div>
+<script type="module">
+  import mount from '{{ "/assets/three-app/particlevessel.js" | relative_url }}';
+  const el = document.getElementById('three-hero');
+
+  // lazy init when visible
+  const init = () => {
+    if (el._mounted) return;
+    el._mounted = true;
+    mount(el, {
+      // you can pass props through to your React component here:
+      // count: window.innerWidth < 768 ? 12000 : 32000
+    });
+  };
+
+  const io = new IntersectionObserver((entries) => {
+    if (entries.some(e => e.isIntersecting)) { init(); io.disconnect(); }
+  }, { threshold: 0.1 });
+
+  io.observe(el);
+</script>
