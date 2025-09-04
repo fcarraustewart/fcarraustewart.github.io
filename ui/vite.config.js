@@ -11,6 +11,7 @@ export default defineConfig({
       input: "./src/main.jsx",
       output: {
         entryFileNames: "particlevessel.js"   // 👈 force stable filename
+        // entryFileNames: "particlewidget.js"
       }
     }
   }
