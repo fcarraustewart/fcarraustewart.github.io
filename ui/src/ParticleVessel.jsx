@@ -86,7 +86,7 @@ const ParticleVessel = () => {
     
     >
       {/* Controls */}
-      <div style={{ position: "absolute", top: 200, left: 20, zIndex: 30 }}>
+      <div style={{ position: "absolute", top: 230, left: 20, zIndex: 30 }}>
         <button onClick={isConnected ? disconnect : handleConnect}>
           {isConnected ? "Disconnect BLE" : "Connect BLE"}
         </button>
@@ -114,16 +114,7 @@ const ParticleVessel = () => {
             userSelect: "none",
           }}
         >
-        </div>
-      </div>
-
-
-      {/* Background animation (driven by filtered) */}
-      <EmptyParticles sensorValue={simulate ? sensorValue/5: rawValue/100} imu = { imuValues } />
-      
-
-
-      <pre>
+          <pre>
             Roll: {imuValues.roll?.toFixed(1)}°
             {"\n"}
             Pitch: {imuValues.pitch?.toFixed(1)}°
@@ -131,7 +122,16 @@ const ParticleVessel = () => {
             Yaw: {imuValues.yaw?.toFixed(1)}°
             {"\n"}
             Heart: {(simulate ? sensorValue/5: rawValue/100)}{" "}
-      </pre>
+          </pre>
+        </div>
+      </div>
+
+      
+      {/* Background animation (driven by filtered) */}
+      <EmptyParticles sensorValue={simulate ? sensorValue/5: rawValue/100} imu = { imuValues } />
+      
+
+
       {/* Draggable chart widget (bottom-center by default) */}
       <FilteredDataChart
         rawValue={simulate ? sensorValue: rawValue}
