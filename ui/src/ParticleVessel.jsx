@@ -74,8 +74,8 @@ const ParticleVessel = () => {
   return (
     <div 
     style={{
-    width: "100vw",
-    height: "100vh",
+    width: "30vw",
+    height: "30vh",
     top: 0,
     left: 0,
     display: "flex",
@@ -86,7 +86,7 @@ const ParticleVessel = () => {
     
     >
       {/* Controls */}
-      <div className="flex flex-col items-center space-y-4">
+      <div style={{ position: "absolute", top: 200, left: 20, zIndex: 30 }}>
         <button onClick={isConnected ? disconnect : handleConnect}>
           {isConnected ? "Disconnect BLE" : "Connect BLE"}
         </button>
@@ -103,8 +103,8 @@ const ParticleVessel = () => {
         <div
           style={{
             position: "relative",
-            width: 100,
-            height: 100,
+            width: 140,
+            height: 150,
             padding: "8px",
             borderRadius: 8,
             background: "rgba(240,238,230,0.78)",
@@ -114,7 +114,16 @@ const ParticleVessel = () => {
             userSelect: "none",
           }}
         >
-          <pre>
+        </div>
+      </div>
+
+
+      {/* Background animation (driven by filtered) */}
+      <EmptyParticles sensorValue={simulate ? sensorValue/5: rawValue/100} imu = { imuValues } />
+      
+
+
+      <pre>
             Roll: {imuValues.roll?.toFixed(1)}°
             {"\n"}
             Pitch: {imuValues.pitch?.toFixed(1)}°
@@ -122,14 +131,7 @@ const ParticleVessel = () => {
             Yaw: {imuValues.yaw?.toFixed(1)}°
             {"\n"}
             Heart: {(simulate ? sensorValue/5: rawValue/100)}{" "}
-          </pre>
-        </div>
-        {/* Background animation (driven by filtered) */}
-        <EmptyParticles sensorValue={simulate ? sensorValue/5: rawValue/100} imu = { imuValues } />
-        
-      </div>
-
-
+      </pre>
       {/* Draggable chart widget (bottom-center by default) */}
       <FilteredDataChart
         rawValue={simulate ? sensorValue: rawValue}
