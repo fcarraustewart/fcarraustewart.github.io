@@ -164,91 +164,112 @@ export default function FilteredDataChart({
     dragRef.current.dy = e.clientY - (rect?.top ?? 0);
     dragRef.current.active = true;
   };
-
-  // Render
   return (
     <div
       ref={boxRef}
       style={{
-        position: "fixed",
+        position: "absolute",   // <-- important: absolute, not relative
         left: pos.left,
         top: pos.top,
         width: 420,
-        height: 200,
+        height: 220,
         padding: "8px",
         borderRadius: 12,
-        background: "rgba(240,238,230,0.78)",
+        background: "rgba(240,238,230,0.92)",
         backdropFilter: "blur(6px)",
         boxShadow: "0 6px 16px rgba(0,0,0,0.18)",
         zIndex: 20,
         userSelect: "none",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      {/* Top bar (drag handle + controls) */}
+      {/* Top bar */}
       <div
-        onMouseDown={startDrag}
         style={{
-          position: "absolute",
-          right: 4,
-          bottom: 4,
-          width: 16,
-          height: 16,
-          background: "#555",
-          borderRadius: 3,
-          cursor: "grab",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          marginBottom: 6,
         }}
-        title="Drag to move"
       >
-        <div style={{ width: 10, height: 10, borderRadius: 3, background: "#222", opacity: 0.6 }} />
         <strong style={{ fontSize: 13 }}>Signal</strong>
-
-        <div style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
-          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 12 }}>View</span>
-            <select
-              value={mode}
-              onChange={(e) => setMode(e.target.value)}
-              style={{ fontSize: 12, padding: "3px 6px", borderRadius: 6 }}
-            >
-              <option value="filtered">Filtered</option>
-              <option value="raw">Raw</option>
-            </select>
-          </label>
-
-          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 12 }}>Gain</span>
-            <input
-              type="range"
-              min="0.5"
-              max="6"
-              step="0.1"
-              value={gain}
-              onChange={(e) => setGain(parseFloat(e.target.value))}
-              style={{ width: 90 }}
-            />
-          </label>
-
-          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 12 }}>Window</span>
-            <input
-              type="range"
-              min="1"
-              max="5"
-              step="0.1"
-              value={winSec}
-              onChange={(e) => setWinSec(parseInt(e.target.value, 10))}
-              style={{ width: 90 }}
-            />
-            <span style={{ fontSize: 12 }}>{winSec}s</span>
-          </label>
+  
+        <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 12 }}>View</span>
+          <select
+            value={mode}
+            onChange={(e) => setMode(e.target.value)}
+            style={{ fontSize: 12, padding: "3px 6px", borderRadius: 6 }}
+          >
+            <option value="filtered">Filtered</option>
+            <option value="raw">Raw</option>
+          </select>
+        </label>
+  
+        <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 12 }}>Gain</span>
+          <input
+            type="range"
+            min="0.5"
+            max="6"
+            step="0.1"
+            value={gain}
+            onChange={(e) => setGain(parseFloat(e.target.value))}
+            style={{ width: 80 }}
+          />
+        </label>
+  
+        <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 12 }}>Window</span>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            step="1"
+            value={winSec}
+            onChange={(e) => setWinSec(parseInt(e.target.value, 10))}
+            style={{ width: 80 }}
+          />
+          <span style={{ fontSize: 12 }}>{winSec}s</span>
+        </label>
+  
+        {/* Drag handle at the far right */}
+        <div
+          onMouseDown={startDrag}
+          style={{
+            marginLeft: "auto",
+            width: 16,
+            height: 16,
+            background: "#555",
+            borderRadius: 3,
+            cursor: "grab",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          title="Drag to move"
+        >
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: 2,
+              background: "#222",
+              opacity: 0.6,
+            }}
+          />
         </div>
       </div>
-
+  
       {/* Chart area */}
-      <div style={{ width: "100%", height: "calc(100% - 36px)" }}>
+      <div style={{ flex: 1 }}>
         {chartData.length > 1 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 6, right: 6, left: 0, bottom: 6 }}>
+            <LineChart
+              data={chartData}
+              margin={{ top: 6, right: 6, left: 0, bottom: 6 }}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
               <XAxis
                 dataKey="t"
@@ -260,21 +281,18 @@ export default function FilteredDataChart({
                 tick={{ fontSize: 10 }}
                 minTickGap={20}
               />
-              {/* <XAxis dataKey="i" tickFormatter={(i) => (i / sampleRateHz).toFixed(1) + "s"} /> */}
               <YAxis tick={{ fontSize: 10 }} domain={["auto", "auto"]} />
-
-              {/* main black trace */}
+  
               <Line
                 type="monotone"
                 dataKey="y"
                 stroke="#200"
                 dot={false}
                 isAnimationActive={false}
-                strokeWidth={4}
+                strokeWidth={3}
                 connectNulls={false}
               />
-
-              {/* peaks: show isolated dots only (strokeWidth 0 so line not visible) and label */}
+  
               <Line
                 type="monotone"
                 dataKey="peak"
@@ -293,9 +311,20 @@ export default function FilteredDataChart({
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <div style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 12 }}>Waiting for data…</div>
+          <div
+            style={{
+              height: "100%",
+              display: "grid",
+              placeItems: "center",
+              fontSize: 12,
+            }}
+          >
+            Waiting for data…
+          </div>
         )}
       </div>
     </div>
   );
+  
+  
 }
