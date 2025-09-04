@@ -1,4 +1,182 @@
 <!-- _includes/three-widget.html -->
-<div id="three-root" style="width:400px; height:300px; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.2);"></div>
+<div id="three-widget" style="width:400px; height:300px; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.2);"></div>
 
-<script type="module" src="{{ '/assets/three-app/particlevessel.js' | relative_url }}"></script>
+<script type="module">
+  const container = document.getElementById('three-widget');
+  if (!container) {
+    console.warn('three-root container not found');
+  // } else {
+  //   const width = container.clientWidth;
+  //   const height = container.clientHeight;
+
+  //   const scene = new THREE.Scene();
+  //   scene.background = new THREE.Color('#F0EEE6');
+
+  //   const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  //   camera.position.z = 5;
+
+  //   const renderer = new THREE.WebGLRenderer({
+  //     antialias: true,
+  //     powerPreference: 'high-performance',
+  //     alpha: false,
+  //     stencil: false,
+  //     depth: true,
+  //   });
+  //   renderer.setSize(width, height);
+  //   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  //   container.appendChild(renderer.domElement);
+
+  //   const particleMaterial = new THREE.ShaderMaterial({
+  //     uniforms: {
+  //       time: { value: 0 },
+  //       opacity: { value: 0.6 },
+  //       speedFactor: { value: 1.0 },
+  //     },
+  //     vertexShader: `
+  //       uniform float time;
+  //       uniform float speedFactor;
+  //       attribute float size;
+  //       attribute vec3 customColor;
+  //       varying vec3 vColor;
+
+  //       // Heart modulation in polar form (lightweight, stable)
+  //       // Base cardioid-like curve: r ~ (1.0 - sin(theta)), tweaked for a heart silhouette.
+  //       float heartFactor(float a){
+  //         // a in radians
+  //         float s = sin(a);
+  //         // cardioid component (1 - sinθ) scaled + offset to stay positive
+  //         float base = 0.65 + 0.55 * (1.0 - s);
+  //         // subtle "cleft" emphasis using |cosθ|
+  //         float cleft = 0.4 * pow(abs(cos(a)), 0.8);
+  //         return clamp(base + cleft, 0.4, 1.6);
+  //       }
+
+  //       void main() {
+  //         vColor = customColor;
+  //         vec3 pos = position;
+
+  //         float radius = length(pos.xz);
+  //         float angle = atan(pos.z, pos.x);
+  //         float height = pos.y;
+
+  //         // Vessel falloff (keeps an "empty" inner volume)
+  //         float vessel = smoothstep(0.3, 0.7, radius) * smoothstep(1.0, 0.7, radius);
+
+  //         // Rotation & breathing space modulated by speedFactor (from BLE)
+  //         angle += time * 0.08;
+  //         float space = sin(time * 0.3 * speedFactor + radius * 3.0) * 0.1;
+
+  //         // Heart modulation of radial distance in XZ plane
+  //         float h = heartFactor(angle);
+  //         float newRadius = (radius + space) * vessel * h * speedFactor;
+
+  //         vec3 newPos;
+  //         newPos.x = cos(angle) * newRadius;
+  //         newPos.z = sin(angle) * newRadius;
+  //         newPos.y = height * vessel - 1.2;
+
+  //         // Global scale to fit canvas
+  //         newPos *= 2.75;
+
+  //         vec4 mvPosition = modelViewMatrix * vec4(newPos, 1.0);
+  //         gl_PointSize = size * (128.0 / -mvPosition.z);
+  //         gl_Position = projectionMatrix * mvPosition;
+  //       }
+  //     `,
+  //     fragmentShader: `
+  //       uniform float opacity;
+  //       varying vec3 vColor;
+  //       void main() {
+  //         vec2 c = gl_PointCoord - vec2(0.5);
+  //         float d2 = dot(c, c);
+  //         if (d2 > 0.25) discard; // stay circular
+  //         float alpha = (1.0 - smoothstep(0.2025, 0.25, d2)) * opacity;
+  //         gl_FragColor = vec4(vColor, alpha);
+  //       }
+  //     `,
+  //     transparent: true,
+  //     depthWrite: false,
+  //     blending: THREE.NormalBlending,
+  //     side: THREE.DoubleSide,
+  //     vertexColors: true,
+  //   });
+
+  //   const count = parseInt(container.dataset.count || '15000', 10);
+
+  //   const positions = new Float32Array(count * 3);
+  //   const colors = new Float32Array(count * 3);
+  //   const sizes = new Float32Array(count);
+
+  //   let i3 = 0;
+  //   for (let i = 0; i < count; i++) {
+  //     const t = i / count;
+  //     const radius = Math.pow(t, 0.5);
+  //     const angle = t * Math.PI * 40.0;
+  //     const vesselHeight = Math.sin(t * Math.PI) * 1.8;
+
+  //     const randRadius = radius + (Math.random() - 0.5) * 0.05;
+  //     const randAngle = angle + (Math.random() - 0.5) * 0.1;
+
+  //     positions[i3] = Math.cos(randAngle) * randRadius;
+  //     positions[i3 + 1] = vesselHeight;
+  //     positions[i3 + 2] = Math.sin(randAngle) * randRadius;
+
+  //     const shade = 0.1 + Math.sqrt(radius) * 0.1 + Math.random() * 0.02;
+  //     colors[i3] = shade;
+  //     colors[i3 + 1] = shade;
+  //     colors[i3 + 2] = shade;
+
+  //     sizes[i] = (1.0 - Math.abs(vesselHeight * 0.5)) * 0.2 + 0.1;
+
+  //     i3 += 3;
+  //   }
+
+  //   const geometry = new THREE.BufferGeometry();
+  //   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  //   geometry.setAttribute('customColor', new THREE.BufferAttribute(colors, 3));
+  //   geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+  //   const points = new THREE.Points(geometry, particleMaterial);
+  //   scene.add(points);
+
+  //   const clock = new THREE.Clock();
+  //   let rafId = 0;
+  //   const animate = () => {
+  //     rafId = requestAnimationFrame(animate);
+  //     const time = clock.getElapsedTime();
+  //     particleMaterial.uniforms.time.value = time;
+  //     renderer.render(scene, camera);
+  //   };
+  //   animate();
+
+  //   const onResize = () => {
+  //     const w = container.clientWidth;
+  //     const h = container.clientHeight;
+  //     camera.aspect = w / h;
+  //     camera.updateProjectionMatrix();
+  //     renderer.setSize(w, h);
+  //   };
+  //   window.addEventListener('resize', onResize, { passive: true });
+
+  //   // Optional: control speedFactor via custom event
+  //   window.addEventListener('three-speed', (e) => {
+  //     const v = Number(e.detail);
+  //     if (!Number.isNaN(v)) {
+  //       particleMaterial.uniforms.speedFactor.value = 0.5 + v / 50.0;
+  //     }
+  //   });
+
+  //   // Cleanup on unload
+  //   window.addEventListener('beforeunload', () => {
+  //     cancelAnimationFrame(rafId);
+  //     scene.remove(points);
+  //     geometry.dispose();
+  //     particleMaterial.dispose();
+  //     renderer.dispose();
+  //     if (renderer.domElement && renderer.domElement.parentNode) {
+  //       renderer.domElement.parentNode.removeChild(renderer.domElement);
+  //     }
+  //     window.removeEventListener('resize', onResize);
+  //   });
+  }
+</script>
