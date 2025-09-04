@@ -217,6 +217,9 @@ exclude:
   - LICENSE
   - "*.config.js"
   - package*.json
+  - ui/index.html
+  - ui/src/
+  - ui/vite.svg
 
 jekyll-archives:
   enabled: [categories, tags]
