@@ -23,27 +23,49 @@ The blog **consumes the UI build output as a committed static asset.** Editing
 `ui/src/*` does nothing to the published site until you rebuild and commit
 `assets/three-app/particlevessel.js`.
 
-## ⚠️ Known-broken state (verified 2026-06-15 — fix before trusting CI)
+## ⚠️ The #1 footgun: gem version drift breaks CI silently
 
-Both pipelines have live failures from a clean checkout:
+**`Gemfile.lock` is gitignored.** So GitHub Actions resolves the *newest* gem
+matching `Gemfile` (`jekyll-theme-chirpy "~> 7.1"`) on **every** run. Your local
+build and CI can therefore run **different theme versions** — a green local build
+proves nothing about CI. (Real incident, 2026-06-15: local was 7.3.1, CI floated
+to 7.5.0.)
 
-1. **`ui/` is NOT in `_config.yml`'s `exclude:` list.** Jekyll therefore copies
-   the whole `ui/` tree — *including `node_modules/`* — into `_site/`, and the
-   leftover Vite-starter `ui/index.html` (refs `/vite.svg`, `/src/main.jsx`)
-   makes **htmlproofer fail with 2 errors**. CI runs the same htmlproofer, so the
-   Pages deploy is red/bloated. **Fix:** add `ui` and `node_modules` to
-   `exclude:` in `_config.yml`.
+This bites hardest with **stale vendored theme files**. The Chirpy *starter* is
+only meant to vendor `_config.yml`, `_plugins`, `_tabs`, and `index.html`. This
+repo had also vendored **`assets/feed.xml`** (from "Chirpy init"), which
+hard-coded `{% include post-description.html %}`. Chirpy 7.5.0 removed that
+include, so the vendored file referenced something the gem no longer ships and
+**the production build died** (`Could not locate the included file
+'post-description.html'`). The theme already ships its own version-matched
+`feed.xml`, so the override was redundant — it was **deleted** (commit removing
+`assets/feed.xml`). The fix is durable: with no override, whatever gem version CI
+resolves provides a matching feed.
 
-2. **`npm run build` fails from a clean install.** `ui/src/FilteredDataChart.jsx`
-   imports **`recharts`**, which was never added to `ui/package.json` (confirmed
-   via git history). The committed `particlevessel.js` was built with an ad-hoc
-   local install. **Fix:** `cd ui && npm install recharts` (persists it to
-   `package.json`).
+**Rules that follow from this:**
+- **Do NOT vendor theme partials/assets** (`feed.xml`, `_includes/*` that the gem
+  owns, layouts, JS) unless you intend to maintain them across theme upgrades.
+  Every vendored theme file is a future version-drift landmine.
+- **To truly reproduce CI before pushing**, match its gem version:
+  `bundle update jekyll-theme-chirpy && tools/test.sh`. `Gemfile.lock` is
+  gitignored, so this only changes your local resolution.
+- **Recommended hardening (not yet done):** un-ignore and commit `Gemfile.lock`
+  so local and CI pin the exact same gem set; upgrade the theme deliberately via
+  `bundle update`. Until then, CI can break with zero content changes whenever a
+  new Chirpy release lands.
 
-3. **`npm run lint` has 4 pre-existing errors** (`__dirname` undefined in
-   `vite.config.js`, unused vars, a constant-`??` in `ParticleVessel.jsx`).
+## Known rough edges (not blocking, verified 2026-06-16)
 
-Until #1 and #2 are fixed, `tools/test.sh` and `npm run build` will not pass.
+- **`npm run lint` (`ui/`) reports ~4 errors** (`__dirname` undefined in
+  `vite.config.js`, unused vars, a constant-`??` in `ParticleVessel.jsx`). Lint is
+  not part of CI, so this doesn't gate deploys — but don't expect a clean lint.
+- **`browserconfig.xml` references `mstile-150x150.png`, which doesn't exist.**
+  Harmless: Chirpy 7.5.0's `favicons.html` no longer loads `browserconfig.xml`,
+  so nothing requests the missing tile.
+- The earlier `ui/`-leaks-into-`_site` htmlproofer failure and the missing-
+  `recharts` build failure were **both fixed upstream** (`ui/index.html`,
+  `ui/src/`, `ui/vite.svg` are now in `_config.yml` `exclude:`; `recharts` is now
+  a declared dependency).
 
 ## Common tasks
 
@@ -104,7 +126,54 @@ CI** — it serves the committed `assets/three-app/` bundle as-is. Paths in
 `.gitignore`, `README.md`, `LICENSE` are ignored by the workflow trigger.
 
 `tools/test.sh` reproduces the CI build+proof locally; run it before pushing if
-you changed links, images, or front matter.
+you changed links, images, or front matter. (But see the gem-drift warning above:
+to match CI exactly, `bundle update jekyll-theme-chirpy` first.)
+
+**Git identity:** `origin` is set to the SSH alias
+`git@github-personal:fcarraustewart/fcarraustewart.github.io.git` (key
+`~/.ssh/id_ed25519_personal`, defined in `~/.ssh/config`), so pushes use the
+personal GitHub identity rather than the default `github.com` key.
+
+## Favicons / site icons (the browser-tab mini-icon)
+
+All site icons live in **`assets/img/favicons/`** and are set to the owner's
+**profile picture** (the GitHub avatar from `_config.yml`'s `avatar:` field).
+Chirpy 7.5.0's `_includes/favicons.html` (in the gem) loads exactly these:
+
+| File | Used for |
+|------|----------|
+| `favicon-96x96.png` | **the browser-tab mini-icon** (`rel="icon"` 96×96) |
+| `favicon.svg`       | vector-capable browsers (`rel="icon"` svg) |
+| `favicon.ico`       | legacy `rel="shortcut icon"` (multi-res 48/32/16) |
+| `apple-touch-icon.png` (180×180) | iOS home-screen |
+| `site.webmanifest` → `web-app-manifest-192x192.png`, `-512x512.png` | PWA install icons |
+
+`browserconfig.xml` / `mstile-150x150.png` are **not** loaded by 7.5.0 — ignore them.
+
+**Regenerate the whole set from a source image** (needs ImageMagick `magick`):
+```sh
+cd assets/img/favicons
+curl -sL "https://avatars.githubusercontent.com/u/39782345?s=512&v=4" -o /tmp/p.png
+magick /tmp/p.png -resize 512x512^ -gravity center -extent 512x512 -strip /tmp/b.png
+magick /tmp/b.png -resize 96x96   -strip favicon-96x96.png
+magick /tmp/b.png -resize 180x180 -strip apple-touch-icon.png
+magick /tmp/b.png -resize 192x192 -strip web-app-manifest-192x192.png
+cp /tmp/b.png web-app-manifest-512x512.png
+magick /tmp/b.png -define icon:auto-resize=48,32,16 favicon.ico
+# favicon.svg = a data-URI PNG wrapper (NOT a true vector). Keep it small:
+magick /tmp/b.png -resize 256x256 -strip /tmp/i.png
+printf '%s' "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"256\" height=\"256\" viewBox=\"0 0 256 256\"><image width=\"256\" height=\"256\" href=\"data:image/png;base64,$(base64 -i /tmp/i.png | tr -d '\n')\"/></svg>" > favicon.svg
+```
+Gotchas baked into this:
+- **`favicon.svg` is a raster wrapped in SVG**, not a true vector. Keep the
+  embedded PNG ≤256 px — a previous version was a **12 MB** SVG. SVG-preferring
+  browsers use this, so update it whenever you change the icon or they'll show the
+  *old* one.
+- **`site.webmanifest` is a Liquid-processed file** (has `layout: compress` front
+  matter). It must reference the icon filenames that actually exist
+  (`web-app-manifest-*.png`). It previously pointed at `android-chrome-*.png`
+  (a different generator's naming) that were never present → broken PWA icons.
+  Keep manifest filenames and the files on disk in sync.
 
 ## Authoring posts
 
