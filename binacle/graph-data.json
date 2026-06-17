@@ -1,0 +1,6 @@
+---
+# Build-time graph data for the Binacle landing page.
+# Populated by _plugins/binacle-graph.rb from post tags/categories.
+permalink: /binacle/graph-data.json
+---
+{{ site.data.binacle_graph | jsonify }}

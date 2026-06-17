@@ -196,6 +196,63 @@ Images are **`.webp` with an inline base64 LQIP** placeholder. `_config.yml`
 permalinks: posts → `/posts/:title/`, tabs → `/:title/`. Tabs (nav pages) are in
 `_tabs/` with an `order:` field.
 
+## Binacle: tech-stack graph + Obsidian sync
+
+Two cooperating pieces let you author in Obsidian and navigate posts as a graph.
+
+### The `/binacle/` graph landing page
+
+A force-directed graph (Obsidian-style) for navigating **tech stacks → dev
+blogs**. Nodes: posts (purple, click to open), categories (red hubs), tags
+(blue stacks). It **auto-grows** — tag a new post and it appears; no manual
+upkeep. Pieces:
+
+| File | Role |
+|------|------|
+| `_plugins/binacle-graph.rb` | Jekyll **generator** — at build time, walks `site.posts` and builds `{nodes, links}` from each post's `categories:`/`tags:`. Exposes `site.data.binacle_graph`. Logs `Binacle: graph built (N nodes, M edges)`. |
+| `binacle/graph-data.json` | One-line Liquid file: `{{ site.data.binacle_graph \| jsonify }}` → served at `/binacle/graph-data.json`. |
+| `binacle/graph.js` | Vanilla renderer (no bundler). Fetches the JSON, draws with the `ForceGraph` UMD global, post-click navigates, hub-click focuses a neighbourhood. |
+| `_tabs/binacle.html` | The nav tab (`order: 5`, compass icon) at `/binacle/`. Loads `force-graph` from CDN + `binacle/graph.js`. |
+
+Why this split: **custom `_plugins` DO run here** because CI builds via GitHub
+*Actions* (`bundle exec jekyll b`), not the legacy Pages gem sandbox — confirmed
+by the pre-existing `_plugins/posts-lastmod-hook.rb`. The page is a Chirpy *tab*
+(in `_tabs/`) because the sidebar nav only iterates `site.tabs`; a page in the
+`binacle/` source folder alone would not appear in nav and would collide on the
+`/binacle/` permalink. So: **page = `_tabs/binacle.html`; data + renderer live in
+the `binacle/` folder.**
+
+`force-graph` is loaded from **CDN** (external → htmlproofer `--disable-external`
+ignores it; not PWA-cached). To make it offline-robust, vendor the UMD build into
+`binacle/` and point the `<script>` at it.
+
+### Obsidian → posts (`tools/obsidian-sync.rb`)
+
+Authoring stays in Obsidian (`~/Documents/Obsidian Vault`, override with
+`VAULT=`); this script converts opted-in notes into Chirpy posts. **Opt in with
+`publish: true`** in a note's YAML front matter. It then:
+
+- maps front matter (`title`, `date`→file mtime fallback, `categories`, `tags`,
+  `description`, `pin`, `image`, …) into Jekyll post front matter;
+- rewrites `[[Target|Alias]]` → `[Alias](/posts/<slug>/)` **if** Target is also a
+  published note, else to plain text; `![[img.png]]` → a copied image under
+  `assets/img/obsidian/`;
+- writes `_posts/<year>/<date>-<slug>.md`, stamping `obsidian_source:` so re-runs
+  overwrite cleanly and **only managed posts are ever touched** (hand-written
+  posts without that key are never modified).
+
+```sh
+tools/obsidian-sync.rb --dry-run     # preview, write nothing
+tools/obsidian-sync.rb               # sync vault -> _posts/
+tools/obsidian-sync.rb --prune       # also delete managed posts whose note is gone/unpublished
+VAULT="/other/vault" tools/obsidian-sync.rb
+```
+
+Workflow: edit notes in Obsidian → `tools/obsidian-sync.rb` → `tools/run.sh` to
+preview → commit the generated posts. The graph picks them up automatically on
+the next build. The vault itself is **not** a git submodule and is not synced
+back; only the published posts live in this repo.
+
 ## Branches
 
 - `main` — published site.
