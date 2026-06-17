@@ -1,0 +1,32 @@
+---
+# The Binacle: a graph to navigate tech stacks -> dev blogs.
+# Page lives at /binacle/. Supporting assets are in the /binacle/ folder.
+layout: page
+icon: fas fa-compass
+order: 5
+title: Binacle
+---
+
+<p>
+  A <strong>binacle</strong> is the housing that holds a ship's compass — this
+  one helps you navigate between <em>tech stacks</em> and the dev blogs that use
+  them. Big red nodes are areas (categories), blue nodes are stacks (tags), and
+  purple nodes are posts. <strong>Click a post</strong> to open it; click a stack
+  or area to focus its neighbourhood. It grows automatically as new posts are
+  tagged.
+</p>
+
+<div
+  id="binacle-graph"
+  data-src="{{ '/binacle/graph-data.json' | relative_url }}"
+  style="width:100%;height:70vh;min-height:420px;border:1px solid var(--main-border-color, #eee);border-radius:8px;overflow:hidden"
+></div>
+
+<noscript>
+  <p>The navigation graph needs JavaScript. Browse by
+    <a href="{{ '/tags/' | relative_url }}">tags</a> or
+    <a href="{{ '/categories/' | relative_url }}">categories</a> instead.</p>
+</noscript>
+
+<script src="https://cdn.jsdelivr.net/npm/force-graph@1/dist/force-graph.min.js"></script>
+<script src="{{ '/binacle/graph.js' | relative_url }}"></script>
