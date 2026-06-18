@@ -8,6 +8,9 @@ tags:
 - dataviz
 - ui-ux
 description: An interactive two-axis map of red wine — fruit vs earth, fresh vs dense — and a small detour into why a UI/UX person finds wine so plottable.
+image:
+    path: /assets/img/headers/wine-taste-space.webp
+    lqip: data:image/webp;base64,UklGRjYAAABXRUJQVlA4ICoAAADwAgCdASoUAAsAPxFysFAsJqSisAgBgCIJaQDKAC0kAAD+77qohlUwAAA=
 pin: false
 ---
 
