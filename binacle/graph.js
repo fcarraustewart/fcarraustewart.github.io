@@ -54,7 +54,9 @@
         .width(el.clientWidth)
         .height(el.clientHeight)
         .backgroundColor("rgba(0,0,0,0)")
+        .autoPauseRedraw(false) // keep redrawing so hover/focus highlights update
         .nodeId("id")
+        .graphData(data) // <-- without this the canvas stays blank
         .nodeRelSize(4)
         .nodeVal(sizeOf)
         .linkColor(function () {
@@ -98,8 +100,16 @@
           }
           // focus/unfocus a stack or area
           highlight = highlight === node.id ? null : node.id;
-          graph.nodeColor(graph.nodeColor()); // nudge a re-render
         });
+
+      // frame the whole graph once the initial layout settles
+      var fitted = false;
+      graph.onEngineStop(function () {
+        if (!fitted) {
+          fitted = true;
+          graph.zoomToFit(400, 40);
+        }
+      });
 
       // keep the canvas sized to its container
       window.addEventListener("resize", function () {
