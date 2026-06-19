@@ -196,6 +196,65 @@ Images are **`.webp` with an inline base64 LQIP** placeholder. `_config.yml`
 permalinks: posts → `/posts/:title/`, tabs → `/:title/`. Tabs (nav pages) are in
 `_tabs/` with an `order:` field.
 
+Posts are **not all tech**: categories/tags are free-form, so non-tech posts are
+fine (e.g. `categories: [Wine]`, `tags: [winemaking, dataviz, ui-ux]`). A new
+category/tag needs no registration — the Binacle generator and Chirpy's tag/category
+pages are created on the next build (a `Wine` hub + `winemaking` page just appeared
+that way). The header image is **optional** (the VexRiscv post has none).
+
+### Embedding an interactive widget in a post (the proven pattern)
+
+To drop a *fully interactive* JS/React thing into a post (done for the red-wine
+taste map, `_posts/2026/2026-06-18-the-taste-space-of-red-wine.md`):
+
+1. **Self-contained widget → `assets/widgets/<name>.html`.** Inline *everything*
+   (React + ReactDOM UMD + the transpiled component) into one HTML file with **no
+   external `<script src>`**. Reasons: htmlproofer runs `--disable-external` so it
+   won't catch a broken CDN, and a CDN dep isn't PWA-cached/offline-robust. A
+   ~150 KB self-contained file is the right tradeoff.
+2. **It's served as-is.** A `.html` in `assets/` with **no YAML front matter** is
+   copied verbatim by Jekyll (static file) — no `_config.yml` change needed. Confirm
+   it lands at `_site/assets/widgets/<name>.html` after a build.
+3. **Embed via `<iframe>`, not inline HTML.** kramdown will mangle raw inline
+   markup and the widget's dark CSS would collide with the theme; an iframe isolates
+   both. Markdown allows the raw `<iframe>` block:
+   ```html
+   <iframe src="/assets/widgets/<name>.html" loading="lazy"
+     style="width:100%; max-width:560px; height:1000px; border:0; margin:1rem auto; display:block;"></iframe>
+   ```
+   The iframe height is **fixed** — set it to the widget's content height. The
+   red-wine widget's inner React sets `minHeight:100vh`; the host HTML overrides it
+   to `auto` so it sizes to content inside the frame.
+
+**Transpiling a Claude artifact (JSX) to a runnable widget** — artifacts are JSX
+React components, not plain HTML. To get one: pull the `/public/artifacts/<id>`
+page with `curl` + a normal User-Agent (the `/share/` page is behind Cloudflare and
+blocks headless/scripted clients), then extract the component source from the
+Next.js `self.__next_f.push([1,"…import { useState }…"])` chunk (JSON-string-escaped;
+`json.loads('"'+raw+'"')` to unescape). Then strip `import`/`export default`,
+prepend `const {useState}=React;`, append a `ReactDOM.createRoot(...).render(...)`,
+and transpile with **classic** JSX so it calls the global `React`:
+```sh
+npx --yes esbuild entry.jsx --loader:.jsx=jsx --jsx=transform --outfile=entry.js
+```
+
+### Header image rendered from a widget
+
+The red-wine header (`assets/img/headers/wine-taste-space.webp`) was generated from
+the widget itself, not a separate asset — handy when the post *is* the visual:
+```sh
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu \
+  --force-device-scale-factor=2 --window-size=600,620 --virtual-time-budget=6000 \
+  --screenshot=/tmp/shot.png "file://$PWD/assets/widgets/<name>.html"
+magick /tmp/shot.png -crop 1200x1095+0+0 +repage -resize 1160x600 \
+  -background "#0e0b07" -gravity center -extent 1200x630 -strip assets/img/headers/<name>.webp
+# inline LQIP: tiny webp → base64 data-URI for the post front matter
+magick assets/img/headers/<name>.webp -resize 20x -quality 30 /tmp/lqip.webp
+printf 'data:image/webp;base64,%s\n' "$(base64 -i /tmp/lqip.webp | tr -d '\n')"
+```
+(`cat`-ing a `data:image/...` URI into a terminal may render it as an image instead
+of text — read it from the file or inject it into front matter via a script.)
+
 ## Binacle: tech-stack graph + Obsidian sync
 
 Two cooperating pieces let you author in Obsidian and navigate posts as a graph.
