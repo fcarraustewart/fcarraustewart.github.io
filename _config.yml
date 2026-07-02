@@ -220,6 +220,7 @@ exclude:
   - ui/index.html
   - ui/src/
   - ui/vite.svg
+  - concerts/
 
 jekyll-archives:
   enabled: [categories, tags]

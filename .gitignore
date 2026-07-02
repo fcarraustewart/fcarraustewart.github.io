@@ -15,6 +15,8 @@ _site
 # NPM dependencies
 node_modules
 package-lock.json
+# concerts/ scanner lockfile IS committed so CI `npm ci` is reproducible
+!concerts/package-lock.json
 
 # IDE configurations
 .idea

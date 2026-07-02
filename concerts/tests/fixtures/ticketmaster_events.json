@@ -1,0 +1,35 @@
+{
+  "_embedded": {
+    "events": [
+      {
+        "id": "G5vYZbF1e3kAd",
+        "name": "Justice",
+        "type": "event",
+        "url": "https://www.ticketmaster.fr/fr/manifestation/justice-billet/idmanif/999901",
+        "dates": {
+          "start": {
+            "localDate": "2027-03-12",
+            "localTime": "20:00:00",
+            "dateTime": "2027-03-12T19:00:00Z"
+          },
+          "timezone": "Europe/Paris",
+          "status": { "code": "onsale" }
+        },
+        "classifications": [
+          { "primary": true, "segment": { "name": "Music" }, "genre": { "name": "Dance/Electronic" } }
+        ],
+        "_embedded": {
+          "venues": [
+            {
+              "name": "Accor Arena",
+              "city": { "name": "Paris" },
+              "country": { "name": "France", "countryCode": "FR" },
+              "timezone": "Europe/Paris"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "page": { "size": 20, "totalElements": 1, "totalPages": 1, "number": 0 }
+}

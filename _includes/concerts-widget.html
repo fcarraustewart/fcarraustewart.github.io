@@ -1,0 +1,65 @@
+<!-- Paris Concert Radar — renders site.data.concerts (written daily by
+     .github/workflows/concerts-scan.yml). Pure Liquid: readable with JS
+     disabled; the tiny inline script below only adds a client-side filter. -->
+<div id="concerts-radar" style="margin:1.5rem 0;">
+  {% assign concerts = site.data.concerts %}
+  {% if concerts and concerts.events.size > 0 %}
+  <input id="concerts-filter" type="search" placeholder="Filter by artist or venue…"
+         aria-label="Filter concerts"
+         style="display:none; width:100%; max-width:24rem; margin-bottom:.75rem; padding:.4rem .75rem; border-radius:.5rem; border:1px solid var(--btn-border-color, #444); background:var(--card-bg, transparent); color:inherit;">
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="text-align:left; opacity:.6; font-size:.8rem;">
+          <th style="padding:.4rem .6rem;">Date</th>
+          <th style="padding:.4rem .6rem;">Artist</th>
+          <th style="padding:.4rem .6rem;">Venue</th>
+          <th style="padding:.4rem .6rem;"></th>
+          <th style="padding:.4rem .6rem;">Found by</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ev in concerts.events %}
+        <tr class="concert-row" style="border-top:1px solid var(--main-border-color, #333);">
+          <td style="padding:.5rem .6rem; white-space:nowrap;">{{ ev.date_display }}</td>
+          <td style="padding:.5rem .6rem; font-weight:600;">{{ ev.artist }}</td>
+          <td style="padding:.5rem .6rem;">{{ ev.venue }}</td>
+          <td style="padding:.5rem .6rem;"><a href="{{ ev.url }}" rel="noopener">Tickets&nbsp;↗</a></td>
+          <td style="padding:.5rem .6rem; opacity:.6; font-size:.8rem;">{{ ev.sources | join: " + " }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p id="concerts-empty-filter" style="display:none; opacity:.6;">No shows match that filter.</p>
+  <p style="opacity:.5; font-size:.8rem; margin-top:.5rem;">
+    {{ concerts.count }} upcoming Paris show{% unless concerts.count == 1 %}s{% endunless %}
+    for my Spotify artists · refreshed {{ concerts.generated_at | slice: 0, 10 }}
+    · sources: Ticketmaster, Bandsintown{% if concerts.events.first %}{% endif %}
+  </p>
+  <script>
+    (function () {
+      var input = document.getElementById("concerts-filter");
+      if (!input) return;
+      input.style.display = "block";
+      var rows = document.querySelectorAll("#concerts-radar .concert-row");
+      var empty = document.getElementById("concerts-empty-filter");
+      input.addEventListener("input", function () {
+        var q = input.value.trim().toLowerCase();
+        var visible = 0;
+        rows.forEach(function (r) {
+          var hit = r.textContent.toLowerCase().indexOf(q) !== -1;
+          r.style.display = hit ? "" : "none";
+          if (hit) visible++;
+        });
+        if (empty) empty.style.display = visible ? "none" : "block";
+      });
+    })();
+  </script>
+  {% else %}
+  <p style="opacity:.6;">
+    No upcoming Paris shows on the radar right now — the scanner checks
+    Ticketmaster &amp; Bandsintown daily for artists I follow on Spotify.
+  </p>
+  {% endif %}
+</div>

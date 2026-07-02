@@ -1,0 +1,28 @@
+{
+  "resultsPage": {
+    "status": "ok",
+    "page": 1,
+    "perPage": 50,
+    "totalEntries": 1,
+    "results": {
+      "event": [
+        {
+          "id": 41149292,
+          "type": "Concert",
+          "displayName": "Justice at Le Trianon (May 20, 2027)",
+          "uri": "https://www.songkick.com/concerts/41149292-justice-at-le-trianon",
+          "start": { "date": "2027-05-20", "time": "19:30:00", "datetime": "2027-05-20T19:30:00+0200" },
+          "performance": [
+            { "artist": { "id": 217758, "displayName": "Justice" }, "billing": "headline" }
+          ],
+          "venue": {
+            "id": 37528,
+            "displayName": "Le Trianon",
+            "metroArea": { "id": 28909, "displayName": "Paris", "country": { "displayName": "France" } }
+          },
+          "location": { "city": "Paris, France", "lat": 48.8827, "lng": 2.3438 }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,35 @@
+[
+  {
+    "id": "105815229",
+    "artist_id": "438314",
+    "url": "https://www.bandsintown.com/e/105815229?app_id=fixture",
+    "on_sale_datetime": "2026-11-14T10:00:00",
+    "datetime": "2027-03-12T20:00:00",
+    "venue": {
+      "name": "Accor Arena Paris",
+      "latitude": "48.8384",
+      "longitude": "2.3785",
+      "city": "Paris",
+      "region": "",
+      "country": "France"
+    },
+    "lineup": ["Justice"],
+    "offers": [
+      { "type": "Tickets", "url": "https://www.bandsintown.com/t/105815229", "status": "available" }
+    ]
+  },
+  {
+    "id": "105815230",
+    "artist_id": "438314",
+    "url": "https://www.bandsintown.com/e/105815230?app_id=fixture",
+    "datetime": "2027-04-02T19:30:00",
+    "venue": {
+      "name": "O2 Arena",
+      "city": "London",
+      "region": "",
+      "country": "United Kingdom"
+    },
+    "lineup": ["Justice"],
+    "offers": []
+  }
+]
