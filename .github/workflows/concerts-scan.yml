@@ -1,0 +1,72 @@
+# Daily Paris concert scan. Requires repo secrets (see concerts/SETUP.md);
+# until they exist this workflow no-ops with a clear notice instead of failing.
+name: "Concerts: daily scan"
+
+on:
+  schedule:
+    # 06:00 UTC = 08:00 Europe/Paris in summer (CEST), 07:00 in winter (CET).
+    # GitHub cron is UTC-only; this errs on the earlier side in winter.
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: concerts-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    env:
+      HAS_SECRETS: ${{ secrets.SPOTIFY_REFRESH_TOKEN != '' && secrets.SPOTIFY_CLIENT_ID != '' && secrets.TICKETMASTER_API_KEY != '' }}
+    steps:
+      - name: Gate — secrets not configured yet
+        if: env.HAS_SECRETS != 'true'
+        run: |
+          echo "::notice title=Concerts scan skipped::Required secrets (SPOTIFY_CLIENT_ID, SPOTIFY_REFRESH_TOKEN, TICKETMASTER_API_KEY) are not set. See concerts/SETUP.md."
+
+      - uses: actions/checkout@v4
+        if: env.HAS_SECRETS == 'true'
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        if: env.HAS_SECRETS == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: concerts/package-lock.json
+
+      - name: Install
+        if: env.HAS_SECRETS == 'true'
+        working-directory: concerts
+        run: npm ci
+
+      - name: Scan
+        if: env.HAS_SECRETS == 'true'
+        working-directory: concerts
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
+          BANDSINTOWN_APP_ID: ${{ secrets.BANDSINTOWN_APP_ID }}
+          SONGKICK_API_KEY: ${{ secrets.SONGKICK_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+          ALERT_FROM: ${{ secrets.ALERT_FROM }}
+        run: node src/main.js
+
+      - name: Commit refreshed data
+        if: env.HAS_SECRETS == 'true'
+        run: |
+          git config user.name "concerts-radar[bot]"
+          git config user.email "actions@users.noreply.github.com"
+          git add _data/concerts.json concerts/state/seen.json
+          if git diff --cached --quiet; then
+            echo "No changes — lineup unchanged."
+          else
+            git commit -m "chore(concerts): refresh Paris lineup ($(date -u +%F))"
+            git push origin main
+          fi

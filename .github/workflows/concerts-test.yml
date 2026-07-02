@@ -1,0 +1,26 @@
+# Pure logic gate for the concerts scanner — no secrets, no network in tests.
+name: "Concerts: tests"
+
+on:
+  push:
+    paths: ["concerts/**", ".github/workflows/concerts-test.yml"]
+  pull_request:
+    paths: ["concerts/**", ".github/workflows/concerts-test.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: concerts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: concerts/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - name: Mock end-to-end dry-run
+        run: CONCERTS_MOCK=1 node src/main.js --dry-run

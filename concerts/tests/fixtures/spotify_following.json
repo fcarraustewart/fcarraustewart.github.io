@@ -1,0 +1,12 @@
+{
+  "artists": {
+    "items": [
+      { "id": "1gR0gsQYfi6joyO1dlp76N", "name": "Justice", "genres": ["french house"], "type": "artist" },
+      { "id": "4tZwfgrHOc3mvqYlEYSvVi", "name": "Daft Punk", "genres": ["french house"], "type": "artist" }
+    ],
+    "next": null,
+    "cursors": { "after": null },
+    "limit": 50,
+    "total": 2
+  }
+}

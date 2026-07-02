@@ -1,0 +1,16 @@
+{
+  "_embedded": {
+    "attractions": [
+      {
+        "id": "K8vZ917GtG0",
+        "name": "Justice",
+        "type": "attraction",
+        "url": "https://www.ticketmaster.com/justice-tickets/artist/1094215",
+        "classifications": [
+          { "primary": true, "segment": { "id": "KZFzniwnSyZfZ7v7nJ", "name": "Music" } }
+        ]
+      }
+    ]
+  },
+  "page": { "size": 20, "totalElements": 1, "totalPages": 1, "number": 0 }
+}

@@ -1,0 +1,10 @@
+{
+  "items": [
+    { "id": "1gR0gsQYfi6joyO1dlp76N", "name": "Justice", "type": "artist" },
+    { "id": "16GcWuvvybAoaHr0NqT8Eh", "name": "Vitalic", "type": "artist" }
+  ],
+  "next": null,
+  "limit": 50,
+  "offset": 0,
+  "total": 2
+}

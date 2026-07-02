@@ -1,0 +1,19 @@
+{
+  "name": "concerts-radar",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Paris Concert Radar — scans event APIs for my Spotify artists, emails new Paris shows, writes _data/concerts.json",
+  "scripts": {
+    "test": "vitest run",
+    "scan": "node src/main.js",
+    "scan:dry": "node src/main.js --dry-run",
+    "auth": "node scripts/auth_bootstrap.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.0"
+  }
+}
