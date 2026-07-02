@@ -138,6 +138,32 @@ with low but nonzero CPU time (mostly sleeping, not spinning).
   real APIs. Only run a real (non-mock) scan occasionally to sanity-check
   against live data — every real run also burns Ticketmaster's 5000/day quota.
 
+### Repo secrets the daily cron needs
+
+`concerts-scan.yml` reads these as **repository** secrets (not personal-account
+secrets, not org secrets) — add them at
+**Settings → Secrets and variables → Actions → Repository secrets → New
+repository secret** (repo-level, works the same on a public repo: Actions
+secrets are always encrypted, never shown again after saving, and masked out of
+logs). The workflow no-ops with a clear log line if the three required ones are
+unset, so adding them is safe/reversible — no partial-config failure mode.
+
+| Secret | Required? | Where it comes from |
+|---|---|---|
+| `SPOTIFY_CLIENT_ID` | **required** | developer.spotify.com app dashboard (public PKCE client, no secret) |
+| `SPOTIFY_REFRESH_TOKEN` | **required** | printed once by `SPOTIFY_CLIENT_ID=... npm run auth` (local PKCE bootstrap, `concerts/scripts/auth_bootstrap.mjs`) |
+| `TICKETMASTER_API_KEY` | **required** | Consumer Key from a free app at developer.ticketmaster.com |
+| `BANDSINTOWN_APP_ID` | recommended | any string, no signup (e.g. `radar`) |
+| `RESEND_API_KEY` | needed for email | resend.com free API key |
+| `ALERT_EMAIL` | needed for email | `philstewart0@gmail.com` — **never** `hello@mentalista.com` |
+| `ALERT_FROM` | optional | only if a custom Resend from-domain is verified; otherwise defaults to `onboarding@resend.dev` |
+| `SONGKICK_API_KEY` | optional | approval-gated; source cleanly no-ops without it |
+
+Full step-by-step for obtaining each value is in `concerts/SETUP.md`. After
+adding the three required secrets, trigger a real end-to-end test without
+waiting for the daily 06:00 UTC cron: **Actions tab → "Concerts: daily scan" →
+Run workflow** (dropdown lets you pick the branch).
+
 ## Deployment
 
 Push to `main` (or `master`) → GitHub Actions
