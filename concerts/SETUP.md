@@ -29,7 +29,7 @@ No signup: pick any string as `BANDSINTOWN_APP_ID` (e.g. `fcarraustewart-concert
 1. Free account at <https://resend.com> → API key → `RESEND_API_KEY`.
 2. Verify a from-address/domain; set `ALERT_FROM` (optional, defaults to
    `Concert Radar <onboarding@resend.dev>` which only delivers to your own
-   Resend account email) and `ALERT_EMAIL=hello@mentalista.com`.
+   Resend account email) and `ALERT_EMAIL=philstewart0@gmail.com`.
 
 ## 5. Songkick (optional)
 Keys are approval-gated. If granted, add `SONGKICK_API_KEY`; without it the

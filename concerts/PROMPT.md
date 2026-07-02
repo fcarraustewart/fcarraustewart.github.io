@@ -133,7 +133,7 @@ Write these as `concerts/SETUP.md` and as the PR's "Before this works" section:
 2. **Ticketmaster**: register a free Discovery API key.
 3. **Bandsintown**: pick any `app_id` string (free, no signup needed beyond that).
 4. **Resend** (or Mailgun): free API key + a verified from-address; set `ALERT_EMAIL`
-   to hello@mentalista.com.
+   to philstewart0@gmail.com.
 5. Add all of the above as **GitHub repo secrets**; optionally `SONGKICK_API_KEY`.
 6. Merge the PR. The daily cron then scans and emails; the site shows the lineup.
 
