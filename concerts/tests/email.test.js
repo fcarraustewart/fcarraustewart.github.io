@@ -39,7 +39,7 @@ describe("sendEmail", () => {
     await sendEmail({
       apiKey: "re_test",
       from: "radar@example.com",
-      to: "philstewart0@gmail.com",
+      to: "alerts@example.com",
       subject: "s",
       html: "<p>x</p>",
       fetchImpl: f,
@@ -50,7 +50,7 @@ describe("sendEmail", () => {
     expect(opts.method).toBe("POST");
     expect(opts.headers.Authorization).toBe("Bearer re_test");
     const body = JSON.parse(opts.body);
-    expect(body.to).toEqual(["philstewart0@gmail.com"]);
+    expect(body.to).toEqual(["alerts@example.com"]);
     expect(body.subject).toBe("s");
   });
 

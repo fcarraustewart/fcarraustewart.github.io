@@ -22,7 +22,7 @@ function baseEnv(extra = {}) {
     TICKETMASTER_API_KEY: "tk",
     BANDSINTOWN_APP_ID: "bit",
     RESEND_API_KEY: "rk",
-    ALERT_EMAIL: "philstewart0@gmail.com",
+    ALERT_EMAIL: "alerts@example.com",
     ...extra,
   };
 }
