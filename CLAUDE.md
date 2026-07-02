@@ -117,6 +117,27 @@ nRF5340 project). The particle vessel can be driven by live HRM/BLE data from
 that board. Web Bluetooth requires a secure context (https or localhost) and a
 user gesture; it won't work over plain `http://0.0.0.0`.
 
+## Concerts radar (`concerts/`) — real (non-mock) runs are slow, this is expected
+
+`concerts/src/main.js` (the Paris Concert Radar scanner, see `concerts/PROMPT.md`
+and `concerts/SETUP.md`) fetches per-artist, per-source, **sequentially**, with a
+250ms sleep between calls to respect Ticketmaster's 5 req/s limit. Each artist
+costs up to 2 Ticketmaster calls (attraction lookup + events) plus 1 Bandsintown
+call. For a real Spotify library (`listArtists()` merges followed ∪ top — a
+power-user account can easily return 400+ artists), that's 1000+ sequential
+calls: **a real `npm run scan:dry` / `npm run scan` can take 5-15 minutes.** This
+is not a hang — `ps aux | grep "node src/main.js"` will show the process alive
+with low but nonzero CPU time (mostly sleeping, not spinning).
+
+- Env vars must be **exported** to reach the child `node` process — a bare
+  `SPOTIFY_CLIENT_ID=xxx` on its own line sets a shell variable, not an exported
+  one, and the next command (`npm run scan:dry`) won't see it. Either `export`
+  each var, or prefix them inline on the same command line as `npm run`.
+- For fast iteration while developing, use `CONCERTS_MOCK=1 npm run scan:dry`
+  (fixture-backed fetch, no network, completes instantly) instead of hitting the
+  real APIs. Only run a real (non-mock) scan occasionally to sanity-check
+  against live data — every real run also burns Ticketmaster's 5000/day quota.
+
 ## Deployment
 
 Push to `main` (or `master`) → GitHub Actions
