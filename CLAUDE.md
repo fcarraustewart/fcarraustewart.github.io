@@ -155,7 +155,7 @@ unset, so adding them is safe/reversible — no partial-config failure mode.
 | `TICKETMASTER_API_KEY` | **required** | Consumer Key from a free app at developer.ticketmaster.com |
 | `BANDSINTOWN_APP_ID` | recommended | any string, no signup (e.g. `radar`) |
 | `RESEND_API_KEY` | needed for email | resend.com free API key |
-| `ALERT_EMAIL` | needed for email | `philstewart0@gmail.com` — **never** `hello@mentalista.com` |
+| `ALERT_EMAIL` | needed for email | your inbox address — set only in the repo secret, never hardcoded in code/docs |
 | `ALERT_FROM` | optional | only if a custom Resend from-domain is verified; otherwise defaults to `onboarding@resend.dev` |
 | `SONGKICK_API_KEY` | optional | approval-gated; source cleanly no-ops without it |
 
