@@ -4,7 +4,6 @@ import { useBLE } from "./useBLE";
 import EmptyParticles from "./EmptyParticles.jsx";
 import { BandPassFilter } from "./BpFFilter.js";
 import FilteredDataChart from "./FilteredDataChart";
-import { Float32BufferAttribute } from "three/src/Three.Core.js";
 
 const ParticleVessel = () => {
   const { connect, disconnect, isConnected, sendCommand } = useBLE();
@@ -71,71 +70,81 @@ const ParticleVessel = () => {
     setIsStreaming((s) => !s);
   };
 
+  const heartReading = simulate ? sensorValue / 5 : rawValue ? rawValue / 100 : 0;
+
+  const btnStyle = {
+    padding: "8px 14px",
+    borderRadius: 8,
+    border: "1px solid rgba(0,0,0,0.15)",
+    background: "#fff",
+    cursor: "pointer",
+    fontSize: 13,
+  };
+
   return (
-    <div 
-    style={{
-    width: "30vw",
-    height: "30vh",
-    top: 0,
-    left: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    }}
-    // className="flex flex-col items-center space-y-4"
-    
+    <div
+      style={{
+        width: "100%",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+      }}
     >
       {/* Controls */}
-      <div style={{ position: "absolute", top: 230, left: 20, zIndex: 30 }}>
-        <button onClick={isConnected ? disconnect : handleConnect}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <button style={btnStyle} onClick={isConnected ? disconnect : handleConnect}>
           {isConnected ? "Disconnect BLE" : "Connect BLE"}
         </button>
-        <button
-          onClick={() => setSimulate(!simulate)}
-        >
+        <button style={btnStyle} onClick={() => setSimulate(!simulate)}>
           {simulate ? "Stop Simulation" : "Simulate Heart Sensor"}
         </button>
         {isConnected && (
-          <button onClick={toggleStream} style={{ marginLeft: 8 }}>
+          <button style={btnStyle} onClick={toggleStream}>
             {isStreaming ? "Stop" : "Play"}
           </button>
-        )}{/* Debug Overlay */}
+        )}
+      </div>
+
+      {/* Canvas box: fixed aspect ratio so it stays contained and responsive;
+          position:relative here keeps the IMU badge from escaping this box. */}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "4 / 3",
+          borderRadius: 12,
+          overflow: "hidden",
+          background: "#F0EEE6",
+        }}
+      >
+        <EmptyParticles sensorValue={heartReading} imu={imuValues} />
         <div
           style={{
-            position: "relative",
-            width: 140,
-            height: 150,
-            padding: "8px",
+            position: "absolute",
+            top: 10,
+            left: 10,
+            padding: "6px 10px",
             borderRadius: 8,
-            background: "rgba(240,238,230,0.78)",
+            background: "rgba(240,238,230,0.85)",
             backdropFilter: "blur(6px)",
-            boxShadow: "0 8px 10px rgba(0,0,0,0.18)",
-            zIndex: 20,
+            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+            fontSize: 11,
+            lineHeight: 1.5,
             userSelect: "none",
           }}
         >
-          <pre>
-            Roll: {imuValues.roll?.toFixed(1)}°
-            {"\n"}
-            Pitch: {imuValues.pitch?.toFixed(1)}°
-            {"\n"}
-            Yaw: {imuValues.yaw?.toFixed(1)}°
-            {"\n"}
-            Heart: {(simulate ? sensorValue/5: rawValue/100)}{" "}
-          </pre>
+          <div>Roll: {imuValues.roll?.toFixed(1)}°</div>
+          <div>Pitch: {imuValues.pitch?.toFixed(1)}°</div>
+          <div>Yaw: {imuValues.yaw?.toFixed(1)}°</div>
+          <div>Heart: {heartReading.toFixed(1)}</div>
         </div>
       </div>
 
-      
-      {/* Background animation (driven by filtered) */}
-      <EmptyParticles sensorValue={simulate ? sensorValue/5: rawValue/100} imu = { imuValues } />
-      
-
-
-      {/* Draggable chart widget (bottom-center by default) */}
+      {/* Signal chart — normal flow, packed directly under the canvas */}
       <FilteredDataChart
-        rawValue={simulate ? sensorValue: rawValue}
-        filteredValue={simulate ? sensorValue: filteredValue}
+        rawValue={simulate ? sensorValue : rawValue}
+        filteredValue={simulate ? sensorValue : filteredValue}
         sampleRateHz={SAMPLE_RATE}
       />
     </div>

@@ -39,6 +39,17 @@ const EmptyParticles = ({
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
+    // container is a responsive (%-sized) box, so it can change size on
+    // rotation/resize — keep the canvas and projection in sync with it.
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      const { width: w, height: h } = entry.contentRect;
+      if (w === 0 || h === 0) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+    resizeObserver.observe(container);
+
     const particleMaterial = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
@@ -208,6 +219,7 @@ const EmptyParticles = ({
     animate();
 
     return () => {
+      resizeObserver.disconnect();
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       if (pointsRef.current) scene.remove(pointsRef.current);
       if (geometryRef.current) geometryRef.current.dispose();
@@ -251,7 +263,7 @@ const EmptyParticles = ({
   }, [imu]);
 
 
-  return <div ref={mountRef} style={{ width: "50vw", height: "50vh" }} />;
+  return <div ref={mountRef} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default EmptyParticles;

@@ -220,6 +220,7 @@ exclude:
   - ui/index.html
   - ui/src/
   - ui/vite.svg
+  - ui/node_modules/
   - concerts/
 
 jekyll-archives:

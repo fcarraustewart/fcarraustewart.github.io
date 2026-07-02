@@ -1,5 +1,5 @@
 // src/FilteredDataChart.jsx
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   LineChart,
   Line,
@@ -15,7 +15,6 @@ import {
  * - black main trace (no hover tooltip)
  * - gain & window controls
  * - peak detection (marks maxima with dot + small tag number)
- * - draggable widget
  *
  * Props:
  *   rawValue, filteredValue (numbers or null)
@@ -131,55 +130,16 @@ export default function FilteredDataChart({
     }
   }
 
-  // Draggable widget logic (fixed positioning)
-  const boxRef = useRef(null);
-  const [pos, setPos] = useState({ left: 0, top: 0 });
-  const dragRef = useRef({ active: false, dx: 0, dy: 0 });
-
-  useLayoutEffect(() => {
-    const w = 420;
-    const h = 200;
-    const left = Math.max(12, (window.innerWidth - w) / 2);
-    const top = Math.max(12, window.innerHeight - h - 24);
-    setPos({ left, top });
-  }, []);
-
-  useEffect(() => {
-    const onMove = (e) => {
-      if (!dragRef.current.active) return;
-      setPos((p) => ({ left: e.clientX - dragRef.current.dx, top: e.clientY - dragRef.current.dy }));
-    };
-    const onUp = () => (dragRef.current.active = false);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-  }, []);
-
-  const startDrag = (e) => {
-    const rect = boxRef.current?.getBoundingClientRect();
-    dragRef.current.dx = e.clientX - (rect?.left ?? 0);
-    dragRef.current.dy = e.clientY - (rect?.top ?? 0);
-    dragRef.current.active = true;
-  };
   return (
     <div
-      ref={boxRef}
       style={{
-        position: "absolute",   // <-- important: absolute, not relative
-        left: pos.left,
-        top: pos.top,
-        width: 420,
-        height: 220,
-        padding: "8px",
+        width: "100%",
+        minHeight: 220,
+        padding: "10px 12px",
         borderRadius: 12,
         background: "rgba(240,238,230,0.92)",
-        backdropFilter: "blur(6px)",
-        boxShadow: "0 6px 16px rgba(0,0,0,0.18)",
-        zIndex: 20,
-        userSelect: "none",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.12)",
+        boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
       }}
@@ -188,13 +148,14 @@ export default function FilteredDataChart({
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           alignItems: "center",
           gap: 12,
           marginBottom: 6,
         }}
       >
         <strong style={{ fontSize: 13 }}>Signal</strong>
-  
+
         <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ fontSize: 12 }}>View</span>
           <select
@@ -206,7 +167,7 @@ export default function FilteredDataChart({
             <option value="raw">Raw</option>
           </select>
         </label>
-  
+
         <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ fontSize: 12 }}>Gain</span>
           <input
@@ -219,7 +180,7 @@ export default function FilteredDataChart({
             style={{ width: 80 }}
           />
         </label>
-  
+
         <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ fontSize: 12 }}>Window</span>
           <input
@@ -233,37 +194,10 @@ export default function FilteredDataChart({
           />
           <span style={{ fontSize: 12 }}>{winSec}s</span>
         </label>
-  
-        {/* Drag handle at the far right */}
-        <div
-          onMouseDown={startDrag}
-          style={{
-            marginLeft: "auto",
-            width: 16,
-            height: 16,
-            background: "#555",
-            borderRadius: 3,
-            cursor: "grab",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          title="Drag to move"
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 2,
-              background: "#222",
-              opacity: 0.6,
-            }}
-          />
-        </div>
       </div>
-  
+
       {/* Chart area */}
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, minHeight: 160 }}>
         {chartData.length > 1 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
