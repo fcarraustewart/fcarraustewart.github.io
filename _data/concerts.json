@@ -1,20 +1,6 @@
 {
-  "generated_at": "2026-07-02T12:24:58+02:00",
+  "generated_at": "2026-07-03T10:56:58+02:00",
   "city": "Paris",
-  "count": 1,
-  "events": [
-    {
-      "artist": "Justice",
-      "date": "2027-03-12T20:00:00+01:00",
-      "date_display": "12 Mar 2027 · 20:00",
-      "venue": "Accor Arena",
-      "city": "Paris",
-      "url": "https://www.ticketmaster.fr/fr/manifestation/justice-billet/idmanif/999901",
-      "sources": [
-        "ticketmaster",
-        "bandsintown"
-      ],
-      "key": "justice|2027-03-12|accor-arena"
-    }
-  ]
+  "count": 0,
+  "events": []
 }
