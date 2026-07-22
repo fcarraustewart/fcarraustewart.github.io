@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decoded-event timeline (illustrative)</title>
+<style>
+  :root {
+    --bg: #14161c;
+    --panel: #1b1e26;
+    --border: #2c3040;
+    --text: #e6e8ee;
+    --muted: #8b93a7;
+    --accent: #6fb3ff;
+    --i2c: #4f9d6e;
+    --meta: #d98e3a;
+    --overflow: #d9534f;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .wrap { padding: 14px 16px 16px; }
+  h1 {
+    font-size: 14px; margin: 0 0 4px; font-weight: 600; color: var(--text);
+  }
+  .note {
+    font-size: 11.5px; color: var(--muted); margin: 0 0 12px; line-height: 1.5;
+  }
+  .note strong { color: var(--text); }
+  .lane-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 10px 4px; margin-bottom: 10px;
+  }
+  canvas { display: block; width: 100%; height: 90px; }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: var(--muted);
+    margin: 6px 2px 8px;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  thead th {
+    text-align: left; color: var(--muted); font-weight: 500; padding: 5px 8px;
+    border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--panel);
+  }
+  tbody td { padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); white-space: nowrap; }
+  tbody tr.meta td { color: var(--meta); }
+  tbody tr.overflow td { color: var(--overflow); }
+  .scroll { max-height: 190px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); }
+  .payload { color: var(--muted); }
+  .callout {
+    font-size: 11.5px; color: var(--meta); background: rgba(217,142,58,0.12);
+    border: 1px solid rgba(217,142,58,0.35); border-radius: 6px; padding: 6px 9px; margin: 8px 0 10px;
+  }
+  h2 {
+    font-size: 12.5px; margin: 20px 0 4px; font-weight: 600; color: var(--text);
+    border-top: 1px solid var(--border); padding-top: 16px;
+  }
+  .cmp-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 4px 10px 10px; margin-bottom: 6px; overflow-x: auto;
+  }
+  table.cmp { font-size: 12px; table-layout: fixed; width: 100%; }
+  table.cmp col.loop-col { width: 21%; }
+  table.cmp col.mech-col { width: 47%; }
+  table.cmp col.dt-col { width: 32%; }
+  table.cmp th, table.cmp td { padding: 8px 8px; vertical-align: top; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
+  table.cmp thead th {
+    position: static; font-size: 10.5px; text-transform: uppercase; letter-spacing: .03em;
+  }
+  table.cmp tbody tr { border-bottom: 1px solid rgba(255,255,255,0.06); }
+  table.cmp tbody tr:last-child { border-bottom: none; }
+  table.cmp .loop { color: var(--text); font-weight: 600; }
+  table.cmp .mech { color: var(--muted); }
+  table.cmp .dt { font-weight: 700; font-variant-numeric: tabular-nums; }
+  table.cmp .dt .rigor { display: block; width: fit-content; margin: 4px 0 0; }
+  table.cmp .this-setup { background: rgba(111,179,255,0.08); }
+  table.cmp .this-setup .loop, table.cmp .this-setup .dt { color: var(--accent); }
+  .rigor {
+    display: inline-block; font-size: 9.5px; font-weight: 600; letter-spacing: .03em;
+    padding: 1px 6px; border-radius: 999px; margin-left: 6px; vertical-align: middle;
+  }
+  .rigor.measured { background: rgba(79,157,110,0.18); color: #7fd3a0; }
+  .rigor.typical { background: rgba(139,147,167,0.18); color: var(--muted); }
+  sup.fn { color: var(--muted); font-size: 9.5px; margin-left: 1px; }
+  ol.footnotes {
+    font-size: 10.5px; color: var(--muted); line-height: 1.6; margin: 8px 0 4px 18px; padding: 0;
+  }
+  ol.footnotes li { margin-bottom: 4px; }
+  ol.footnotes strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Firmware dev loops, brought into the AI-agent era</h1>
+  <p class="note">
+    Same question across four kinds of software — <strong>change saved →
+    update visible</strong> — because that loop's length is what actually
+    gates how fast an agent (or a human) can iterate. These aren't a
+    controlled bake-off: an interpreted script hot-swap, a dev-server module
+    patch, and a compiled-firmware rebuild are different mechanisms in
+    different domains. The point is the order of magnitude — firmware has
+    historically been the outlier by 1–2 orders of magnitude, and closing
+    that gap is what the setup below actually buys.
+  </p>
+
+  <div class="cmp-card">
+    <table class="cmp">
+      <colgroup>
+        <col class="loop-col"><col class="mech-col"><col class="dt-col">
+      </colgroup>
+      <thead>
+        <tr><th>Dev loop</th><th>Mechanism</th><th>Change → visible</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="loop">Traditional firmware</td>
+          <td class="mech">edit C → incremental rebuild → flash over SWD/JTAG → MCU reboots → observe on log/LED</td>
+          <td class="dt">~20&nbsp;s – 2&nbsp;min<sup class="fn">1</sup><span class="rigor typical">typical</span></td>
+        </tr>
+        <tr>
+          <td class="loop">Godot (GDScript)</td>
+          <td class="mech">edit .gd → save → editor hot-swaps the script into the running scene, no restart</td>
+          <td class="dt">&lt;1&nbsp;s<sup class="fn">2</sup><span class="rigor typical">typical</span></td>
+        </tr>
+        <tr>
+          <td class="loop">JS/web (dev-server HMR)</td>
+          <td class="mech">edit → Vite/webpack HMR patches the module into the running page, no full reload</td>
+          <td class="dt">&lt;1&nbsp;s<sup class="fn">3</sup><span class="rigor typical">typical</span></td>
+        </tr>
+        <tr class="this-setup">
+          <td class="loop">THIS SETUP</td>
+          <td class="mech">edit C blob → relink against the flashed ELF → push over BLE, verified → runs in RAM, no reflash/reboot</td>
+          <td class="dt">0.8–0.9&nbsp;s (1.8–2.1&nbsp;s signed)<sup class="fn">4</sup><span class="rigor measured">measured</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <ol class="footnotes">
+      <li><strong>1 —</strong> ballpark for an incremental Zephyr build + SWD/JTAG flash + reboot; not a number measured on any project referenced here — an order-of-magnitude figure, not a benchmark.</li>
+      <li><strong>2 —</strong> personally tested this one thoroughly, not just cited — I used Godot's GDScript hot-reload a lot and loved it, and that experience is what pushed me to ask why firmware couldn't feel the same way. The number itself is still a representative range, not a stopwatch benchmark.</li>
+      <li><strong>3 —</strong> typical Vite/webpack dev-server HMR latency (module patched into the running page in-browser); representative range, not benchmarked here. This is the local dev loop, not a production deploy — shipping a change live over CI/CD is a separate, much slower loop not shown here.</li>
+      <li><strong>4 —</strong> measured end-to-end on real hardware (ESP32-C3 / nRF5340 DK) on the separate embedded project this widget illustrates — see that project's own transport-app README for the staged build/sign/transfer/load breakdown.</li>
+    </ol>
+  </div>
+
+  <h2>Detail: decoded-event stream — schematic</h2>
+  <p class="note">
+    <strong>Illustrative fixture, not a live capture.</strong> The real GUI for
+    this device stream is design-only (no capture viewer has shipped yet), so
+    this widget hand-authors a short record sequence in the same wire shape
+    the firmware actually emits over its dedicated BLE characteristic —
+    <code>HELLO</code> / <code>LOADED</code> / <code>UNLOADED</code> /
+    <code>I2C_START</code>/<code>I2C_ADDR</code>/<code>I2C_DATA</code>/<code>I2C_STOP</code>
+    / <code>OVERFLOW</code>. The x-axis is index order, not wall-clock scale.
+  </p>
+
+  <div class="lane-card">
+    <canvas id="lane"></canvas>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--i2c)"></i> I2C transaction</span>
+      <span><i class="swatch" style="background:var(--meta)"></i> decoder load/unload</span>
+      <span><i class="swatch" style="background:var(--overflow)"></i> ring overflow (dropped + reported)</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    ▲ decoder hot-swapped here — new blob pushed and running in ~1&nbsp;s,
+    no reflash, no reboot, capture never stopped
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>#</th><th>t_us</th><th>src</th><th>type</th><th>payload</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+(function () {
+  // Hand-authored to match docs/la-event-stream.md's record shapes:
+  // header = {t_us, src, type}; src 0xFF = stream meta, 0xFE = host/fault.
+  var META = { LOADED: "meta", UNLOADED: "meta", OVERFLOW: "overflow" };
+  var records = [
+    { t_us: 0,       src: 0xFF, type: "HELLO",     payload: "v1 arch=riscv slots=4 slot_size=4096 tick_hz=16000000" },
+    { t_us: 40,      src: 0xFF, type: "LOADED",    payload: "slot=2 name=i2c_dec" },
+    { t_us: 120,     src: 2,    type: "I2C_START", payload: "" },
+    { t_us: 130,     src: 2,    type: "I2C_ADDR",  payload: "addr=0x50 rw=write ack=1" },
+    { t_us: 200,     src: 2,    type: "I2C_DATA",  payload: "byte=0x00 ack=1" },
+    { t_us: 270,     src: 2,    type: "I2C_DATA",  payload: "byte=0x2A ack=1" },
+    { t_us: 340,     src: 2,    type: "I2C_STOP",  payload: "" },
+    { t_us: 900,     src: 2,    type: "I2C_START", payload: "" },
+    { t_us: 910,     src: 2,    type: "I2C_ADDR",  payload: "addr=0x50 rw=read ack=1" },
+    { t_us: 980,     src: 2,    type: "I2C_DATA",  payload: "byte=0x17 ack=1" },
+    { t_us: 1050,    src: 2,    type: "I2C_STOP",  payload: "" },
+    { t_us: 1_650_000, src: 0xFF, type: "UNLOADED",  payload: "slot=2 name=i2c_dec" },
+    { t_us: 1_651_000, src: 0xFF, type: "LOADED",    payload: "slot=2 name=i2c_dec (retargeted)" },
+    { t_us: 1_651_400, src: 2,    type: "I2C_START", payload: "" },
+    { t_us: 1_651_410, src: 2,    type: "I2C_ADDR",  payload: "addr=0x6B rw=write ack=1" },
+    { t_us: 1_651_480, src: 2,    type: "I2C_DATA",  payload: "byte=0x0F ack=1" },
+    { t_us: 1_651_550, src: 2,    type: "I2C_STOP",  payload: "" },
+    { t_us: 1_680_000, src: 0xFF, type: "OVERFLOW",  payload: "records_dropped=3" }
+  ];
+
+  // Group consecutive I2C primitives from one src into a transaction span —
+  // presentation grouping only, same rule the real GUI design uses (it never
+  // re-decodes, it only groups already-decoded primitives).
+  var spans = [];
+  var open = null;
+  records.forEach(function (r, i) {
+    if (r.type === "I2C_START") { open = { start: i, src: r.src }; }
+    if (r.type === "I2C_STOP" && open) { open.end = i; spans.push(open); open = null; }
+  });
+
+  var rowsEl = document.getElementById("rows");
+  records.forEach(function (r) {
+    var tr = document.createElement("tr");
+    if (META[r.type]) tr.className = META[r.type];
+    tr.innerHTML =
+      "<td>" + (records.indexOf(r)) + "</td>" +
+      "<td>" + r.t_us.toLocaleString() + "</td>" +
+      "<td>" + (r.src === 0xFF ? "meta" : r.src === 0xFE ? "host" : "slot " + r.src) + "</td>" +
+      "<td>" + r.type + "</td>" +
+      "<td class=\"payload\">" + (r.payload || "—") + "</td>";
+    rowsEl.appendChild(tr);
+  });
+
+  var canvas = document.getElementById("lane");
+  function draw() {
+    var dpr = window.devicePixelRatio || 1;
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    var n = records.length;
+    var pad = 10;
+    var colW = (w - pad * 2) / (n - 1);
+    var laneY = h / 2;
+
+    // baseline
+    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.beginPath(); ctx.moveTo(pad, laneY); ctx.lineTo(w - pad, laneY); ctx.stroke();
+
+    // I2C transaction spans
+    ctx.fillStyle = "#4f9d6e";
+    spans.forEach(function (s) {
+      var x0 = pad + s.start * colW, x1 = pad + s.end * colW;
+      ctx.fillRect(x0, laneY - 12, Math.max(x1 - x0, 3), 24);
+    });
+
+    // meta markers (LOADED/UNLOADED/OVERFLOW) as full-height flags
+    records.forEach(function (r, i) {
+      if (!META[r.type]) return;
+      var x = pad + i * colW;
+      ctx.strokeStyle = r.type === "OVERFLOW" ? "#d9534f" : "#d98e3a";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x, 6); ctx.lineTo(x, h - 6); ctx.stroke();
+    });
+  }
+  draw();
+  window.addEventListener("resize", draw);
+})();
+</script>
+</body>
+</html>
