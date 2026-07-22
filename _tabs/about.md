@@ -15,12 +15,12 @@ order: 4
 
 # A bit of history of my career arc and its different branches
 
-### SDRs RF Hacky stuff
+### MCUs SDRs RF low-level stuff
 
 - Oscilloscopes 
 - Logic Analyzers 
 - Frequency Spectrum Analyzers were added to the arsenal, in order to understand what the code was doing and what was going on inside the cables of these devices. 
-- I chose a mix of SDR devices, Linux and C++ as my final project and dissertation to attain the Electrical Engineer BAC+5 diploma in December 2021 at Montevideo, Uruguay. I happened to be curious and stunned by the project that my tutor had been developing, and - I developed an attraction to the hacky athmosphere of SDRs, and the community behind it.
+- I chose a mix of SDR devices, Linux and C++ as my final project and dissertation to attain the Electrical Engineer BAC+5 diploma in December 2021 at Montevideo, Uruguay. I happened to be curious and stunned by the project that my tutor had been developing, and - I developed an attraction for the pirate athmosphere of SDRs, and the community behind it.
 
 ### Music Audio and DSP stuff
 
@@ -35,11 +35,11 @@ order: 4
 
 ### PLCs, high voltage and moving bigger-than-humans stuff
 
-- - - I spent a lot of time fighting a project of 27 motors connected to VFDs, connected to PLCs, architecturing a state-machine, and making the boot-up inside a factory that made cookies.
+-  I spent a lot of time fighting a project of 27 motors connected to VFDs, connected to PLCs, architecturing a state-machine, and making the boot-up inside a factory that made cookies. It won't be left out.
 
 # CV:
 
-![CV](/assets/img/headers/fcarraustewart-CV-Q4_2024-_5_.webp)
+![CV](/assets/img/headers/fcarraustewart-CV-Q2_2026.webp)
 
 
 > Felipe Carrau Stewart. [info](https://fcarraustewart.github.io/about). 
