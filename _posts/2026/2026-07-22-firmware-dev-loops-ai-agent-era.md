@@ -120,3 +120,19 @@ didn't set out to build a "hot-reload framework" — I set out to keep playing
 in an engine that respected my time, then got annoyed that firmware didn't,
 and built the thing that made it stop being annoying. That's a fine reason
 to build something.
+
+## The code is public
+
+Everything described above — the blob loader, the host-side build/sign/push
+toolchain, and the hot-reloadable decoders — is now on GitHub. Clone it, wire
+up a dev kit, and the sub-2-second loop is yours to break:
+
+<style>
+  .repo-card-frame { width: 100%; max-width: 600px; height: 400px; border: 0; display: block; margin: 1rem auto; }
+  @media (max-width: 600px) { .repo-card-frame { height: 500px; } }
+</style>
+<iframe src="/assets/widgets/zephyr-hot-reload-repo-card.html"
+        title="zephyr-hot-reload on GitHub"
+        loading="lazy"
+        class="repo-card-frame">
+</iframe>
