@@ -107,6 +107,40 @@ what Godot and a JS dev server already do by default. Closing that gap is
 what actually made an agentic session on real hardware feel normal instead
 of painful.
 
+## Honorable mention: Zephyr's llext
+
+Credit where it's due: this didn't start from a blank page. Zephyr ships
+[llext](https://docs.zephyrproject.org/latest/services/llext/index.html)
+(Linkable Loadable Extensions) — the in-tree, *supported* way to load
+compiled code into a running image, with real ELF relocation, symbol
+linking, and an extension developer kit. Reading llext is what convinced me
+a live-patchable firmware loop was worth chasing at all, and if you're on a
+current Zephyr and want something you could defend in a design review, it's
+the thing to reach for — not this.
+
+So why build a cruder version from the ground up? Because llext couldn't
+cover this project's ground when I needed it to:
+
+- **RISC-V came late.** The ESP32-C3 is RISC-V, and llext's RISC-V
+  relocations only [landed in Zephyr 4.0](https://github.com/zephyrproject-rtos/zephyr/commits/main/arch/riscv/core/elf.c)
+  (merged October 2024) — and even then with caveats like no extension
+  calls from user threads. For most of llext's life it was ARM/Xtensa/x86
+  territory. It does support RISC-V today; it didn't when it mattered here.
+- **Older Zephyr gets nothing.** llext only exists from Zephyr 3.5 onward
+  (late 2023, experimental at first). A codebase pinned to anything earlier
+  — which describes a lot of shipping firmware — can't just turn it on.
+- **Bare-metal gets nothing, ever.** llext is a Zephyr subsystem, full
+  stop. The blob trick — fixed RAM address, `memcpy`, jump — asks nothing
+  of the OS, which means it ports to the bare-metal projects I have queued
+  up next. That portability was a hard requirement; an RTOS-bound loader,
+  however much better engineered, wasn't.
+
+There's also a speed angle baked into the crudeness: a position-fixed blob
+has no ELF to parse and no relocations to apply on-device — the load step
+is a copy and a jump, which is part of how the loop stays under a second.
+llext pays for its generality at exactly that step. Right tool, different
+trade.
+
 ## Where it honestly stands (not for production, but for in-house development)
  It's a
 development-loop trade, full stop — a wild write from a buggy blob can still
