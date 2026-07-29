@@ -52,10 +52,14 @@ ECDSA-P256 verification before it'll run the blob at all). That's the number
 that made the whole thing worth building — it's the same order of magnitude
 as the Godot loop that started this.
 
+<style>
+  .akira-frame { width: 100%; max-width: 600px; height: 1240px; border: 0; border-radius: 10px; display: block; margin: 1rem auto; background: #14161c; }
+  @media (max-width: 640px) { .akira-frame { height: 1800px; } }
+</style>
 <iframe src="/assets/widgets/akira-la-timeline.html"
         title="Firmware dev loops compared, and a schematic of the decoded-event stream"
         loading="lazy"
-        style="width:100%; max-width:600px; height:1000px; border:0; border-radius:10px; display:block; margin:1rem auto; background:#14161c;">
+        class="akira-frame">
 </iframe>
 
 A few things make it survivable as a *habit* rather than a novelty:
