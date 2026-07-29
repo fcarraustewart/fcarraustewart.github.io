@@ -1,0 +1,128 @@
+---
+# Email newsletter signup, powered by follow.it (RSS-to-email on the feed
+# this site already generates). No custom backend, no subscriber database.
+# Deliberately NOT in _tabs/ so it doesn't show in the nav — the floating
+# subscribe button on posts (_plugins/subscribe-widget-hook.rb) links here,
+# and that's the only entry point.
+layout: page
+title: Subscribe
+permalink: /subscribe/
+---
+
+<p>
+  Get an email whenever I publish a new post. No spam, unsubscribe anytime —
+  this just watches the site's <a href="{{ '/feed.xml' | relative_url }}">RSS
+  feed</a> and forwards new posts to your inbox.
+</p>
+
+<style>
+  .followit--follow-form-container .form-preview {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    margin-top: 30px !important;
+    padding: clamp(17px, 5%, 40px) clamp(17px, 7%, 50px) !important;
+    max-width: 420px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border-radius: 8px !important;
+    background-color: var(--card-bg, #1e1e1e) !important;
+    border: 1px solid var(--main-border-color, #383838) !important;
+    box-shadow: none !important;
+  }
+  .followit--follow-form-container .form-preview,
+  .followit--follow-form-container .form-preview * {
+    box-sizing: border-box !important;
+  }
+  .followit--follow-form-container .preview-heading h5 {
+    margin: 0 !important;
+    color: var(--text-color, #e5e5e5) !important;
+    font-family: inherit !important;
+    text-transform: none !important;
+  }
+  .followit--follow-form-container .preview-input-field {
+    margin-top: 20px !important;
+    width: 100% !important;
+  }
+  .followit--follow-form-container .preview-input-field input {
+    width: 100% !important;
+    height: 40px !important;
+    border-radius: 6px !important;
+    border: 1px solid var(--main-border-color, #444) !important;
+    background-color: var(--main-bg, #222) !important;
+    color: var(--text-color, #e5e5e5) !important;
+    outline: none !important;
+    text-align: center !important;
+    font-family: inherit !important;
+  }
+  .followit--follow-form-container .preview-input-field input::placeholder {
+    color: var(--text-muted-color, #999) !important;
+    opacity: 1 !important;
+  }
+  .followit--follow-form-container .preview-submit-button {
+    margin-top: 10px !important;
+    width: 100% !important;
+  }
+  .followit--follow-form-container .preview-submit-button button {
+    width: 100% !important;
+    height: 40px !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    background-color: #e37c3d !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+  }
+  .followit--follow-form-container .powered-by-line {
+    color: var(--text-muted-color, #999) !important;
+    font-size: 13px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    border-bottom: none !important;
+    background: none !important;
+    display: flex !important;
+    width: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-top: 14px !important;
+  }
+  .followit--follow-form-container .powered-by-line .followit-logo {
+    display: inline-block !important;
+    width: 60px !important;
+    height: 17px !important;
+    margin-left: 8px !important;
+    padding: 3px 5px !important;
+    box-sizing: content-box !important;
+    border-radius: 4px !important;
+    background: #fff url("https://follow.it/images/colored-logo.svg") center / contain no-repeat !important;
+  }
+</style>
+
+<div class="followit--follow-form-container">
+  <form
+    action="https://api.follow.it/subscription-form/dmFjNVp6djdEOU15bmxJRCt4NVg5dmFobGFteW9uMUdKUHdRSC9iWWZBTE82ZTFYcGpOMVhBTXRGVmJ2ckNKZ2lXeGFCZHB5UGF4L0VLb2hqaWVYSUs1SXZBUkJ6dGN3TVJtbEg1cVJwOEVTNlJ2VGRjNUpSYW00UHkrVkhNRDZ8T1N4YmFnd2VSeGhqYkI2WlAzRmxZYjJ1emNXbXJIaEsrYWg1djI4MGM5Yz0=/8"
+    method="post"
+  >
+    <div class="form-preview">
+      <div class="preview-heading">
+        <h5>Get new posts by email</h5>
+      </div>
+      <div class="preview-input-field">
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="Enter your email"
+          spellcheck="false"
+        />
+      </div>
+      <div class="preview-submit-button">
+        <button type="submit">Subscribe</button>
+      </div>
+    </div>
+    <a href="https://follow.it" class="powered-by-line">
+      Powered by
+      <span class="followit-logo" role="img" aria-label="follow.it"></span>
+    </a>
+  </form>
+</div>
