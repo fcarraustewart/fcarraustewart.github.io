@@ -162,11 +162,94 @@ toolchain, and the hot-reloadable decoders — is now on GitHub. Clone it, wire
 up a dev kit, and the sub-2-second loop is yours to break:
 
 <style>
-  .repo-card-frame { width: 100%; max-width: 600px; height: 400px; border: 0; display: block; margin: 1rem auto; }
-  @media (max-width: 600px) { .repo-card-frame { height: 500px; } }
+  .zrc-card {
+    max-width: 600px; margin: 1rem auto;
+    background: linear-gradient(160deg, #20242f 0%, #1b1e26 55%, #171a22 100%);
+    border: 1px solid #2c3040; border-radius: 12px;
+    padding: 18px 20px 16px; position: relative; overflow: hidden;
+    font-size: 0.8125rem; line-height: 1.5; color: #e6e8ee;
+  }
+  .zrc-card::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 2px;
+    background: linear-gradient(90deg, #6fb3ff, #4f9d6e 60%, transparent);
+    opacity: .7;
+  }
+  .zrc-head { display: flex; align-items: center; gap: 12px; }
+  .zrc-head svg { flex: none; width: 34px; height: 34px; fill: #e6e8ee; opacity: .95; }
+  .zrc-owner { font-size: 0.72rem; color: #8b93a7; letter-spacing: .02em; }
+  .zrc-card a.zrc-repo {
+    font-size: 1.06rem; font-weight: 700; color: #6fb3ff; text-decoration: none;
+    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    border-bottom: none;
+  }
+  .zrc-card a.zrc-repo:hover { text-decoration: underline; color: #9cc9ff; }
+  .zrc-desc { margin: 12px 0 0; color: #e6e8ee; }
+  .zrc-desc strong { color: #6fb3ff; font-weight: 600; }
+  .zrc-chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0 0; }
+  .zrc-chip {
+    font-size: 0.69rem; color: #8b93a7; border: 1px solid #2c3040; border-radius: 6px;
+    background: rgba(255,255,255,0.03); padding: 4px 8px; white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .zrc-chip b { color: #e6e8ee; font-weight: 600; }
+  .zrc-chip.zrc-hot b { color: #5fbe87; }
+  .zrc-langbar {
+    display: flex; height: 7px; border-radius: 4px; overflow: hidden;
+    margin: 14px 0 7px; background: #2c3040;
+  }
+  .zrc-langbar span { height: 100%; }
+  .zrc-langs { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.69rem; color: #8b93a7; }
+  .zrc-langs span { display: inline-flex; align-items: center; gap: 5px; }
+  .zrc-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .zrc-cta {
+    margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px;
+    align-items: center; justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;
+  }
+  .zrc-card a.zrc-go {
+    display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+    font-size: 0.78rem; font-weight: 600; color: #14161c !important;
+    background: #6fb3ff; border-radius: 8px; padding: 7px 14px;
+    text-decoration: none; border-bottom: none; transition: filter .15s ease;
+  }
+  .zrc-card a.zrc-go:hover { filter: brightness(1.12); text-decoration: none; }
+  .zrc-go svg { width: 14px; height: 14px; fill: currentColor; }
+  .zrc-lic { font-size: 0.69rem; color: #8b93a7; }
+  @media (max-width: 420px) {
+    .zrc-card { padding: 15px 15px 13px; }
+    .zrc-card a.zrc-repo { font-size: 0.94rem; }
+  }
 </style>
-<iframe src="/assets/widgets/zephyr-hot-reload-repo-card.html"
-        title="zephyr-hot-reload on GitHub"
-        loading="lazy"
-        class="repo-card-frame">
-</iframe>
+<div class="zrc-card">
+  <div class="zrc-head">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    <div>
+      <div class="zrc-owner">fcarraustewart /</div>
+      <a class="zrc-repo" href="https://github.com/fcarraustewart/zephyr-hot-reload" target="_blank" rel="noopener">zephyr-hot-reload</a>
+    </div>
+  </div>
+  <p class="zrc-desc">The code behind this post: <strong>sub-2-second hot reload for Zephyr firmware</strong> — native-C blobs compiled standalone, pushed over BLE into a fixed RAM slot on a live nRF5340 / ESP32-C3, no reflash, no reboot.</p>
+  <div class="zrc-chips">
+    <span class="zrc-chip zrc-hot"><b>0.8–0.9 s</b> unsigned push</span>
+    <span class="zrc-chip zrc-hot"><b>1.8–2.1 s</b> ECDSA-signed</span>
+    <span class="zrc-chip"><b>65–70 kB/s</b> BLE event stream</span>
+    <span class="zrc-chip"><b>nRF5340</b> · <b>ESP32-C3</b></span>
+  </div>
+  <div class="zrc-langbar" aria-hidden="true">
+    <span style="width:57.8%; background:#3572A5;"></span>
+    <span style="width:34.7%; background:#9aa4b8;"></span>
+    <span style="width:6.9%;  background:#89e051;"></span>
+    <span style="width:0.6%;  background:#d98e3a;"></span>
+  </div>
+  <div class="zrc-langs">
+    <span><i class="zrc-dot" style="background:#3572A5;"></i>Python 57.8%</span>
+    <span><i class="zrc-dot" style="background:#9aa4b8;"></i>C 34.7%</span>
+    <span><i class="zrc-dot" style="background:#89e051;"></i>Shell 6.9%</span>
+    <span><i class="zrc-dot" style="background:#d98e3a;"></i>CMake</span>
+  </div>
+  <div class="zrc-cta">
+    <a class="zrc-go" href="https://github.com/fcarraustewart/zephyr-hot-reload" target="_blank" rel="noopener">View on GitHub
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 1 1-1.06-1.06l2.97-2.97H3.75a.75.75 0 0 1 0-1.5h7.44L8.22 4.03a.75.75 0 0 1 0-1.06z"/></svg></a>
+    <span class="zrc-lic">loader · blob toolchain · decoders</span>
+  </div>
+</div>
